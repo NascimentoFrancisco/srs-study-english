@@ -31,6 +31,17 @@ export const useAuth = () => {
         return request.messages
     }
 
+    const handleAuthenticateUser = async() => {
+        const authToken = handleGetToken();
+
+        if (!authToken){
+            dispatch(setAuthStatus('not_authenticated'));
+            return;
+        }
+        authenticate(authToken);
+
+    }
+
     const handleLogout = () => {
         dispatch(setAuthToken(null));
         dispatch(setAuthStatus('not_authenticated'));
@@ -41,6 +52,7 @@ export const useAuth = () => {
     return {
         handleLogin,
         handleGetToken,
+        handleAuthenticateUser,
         handleLogout
     }
 }

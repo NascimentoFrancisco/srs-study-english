@@ -1,11 +1,31 @@
 import { useEffect, useState } from "react";
 import "./style.css"
 import { FiMenu } from "react-icons/fi";
+import { useAppSelector } from "../../../redux/hooks";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/auth";
 
 function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
+    const auth = useAppSelector(state => state.auth);
+    const { handleLogout } = useAuth();
+    
+    const navigate = useNavigate();
+
+    const handleNavigateToLogin = () => {
+        console.log("Clique")
+        if(auth.authStatus === 'authenticated'){
+            console.log(auth.authStatus);
+            handleLogout();
+            navigate("/login");
+        } else {
+            console.log(auth.authStatus);
+            navigate("/login");
+        }
+    }
 
     useEffect(() => {
+        console.log(auth.authStatus);
         const menu = document.getElementById("menu_mobile");
         if (menu) {
             if (menuOpen) {
@@ -31,10 +51,20 @@ function Header() {
             <div className="menu-mobile-logo">
                 <img src="./new_logo.png" alt="logo"/>
             </div>
-
-            <a href="#">Minha conta</a>
-            <a href="#">Sair</a>
-            <a href="#">Sobre</a>
+            { auth.authStatus === 'authenticated' 
+            ?   
+                <>
+                    <a href="#">Minha conta</a>
+                    <a onClick={handleNavigateToLogin}>Sair</a>
+                    <a href="#">Sobre</a>
+                </>
+            :
+                <>
+                    <a href="#">Cria conta</a>
+                    <a onClick={handleNavigateToLogin}>Entrar</a>
+                    <a href="#">Sobre</a>
+                </>
+            }
             <a href="#" id="closedMenu" onClick={() => setMenuOpen(false)}>X</a>
         </div>
         
@@ -44,9 +74,20 @@ function Header() {
             </div>
 
             <div className="header-options">
-                <a href="#">Minha conta</a>
-                <a href="#">Sair</a>
-                <a href="#">Sobre</a>
+                { auth.authStatus === 'authenticated' 
+                ?   
+                    <>
+                        <a href="#">Minha conta</a>
+                        <a onClick={handleNavigateToLogin}>Sair</a>
+                        <a href="#">Sobre</a>
+                    </>
+                :
+                    <>
+                        <a href="#">Cria conta</a>
+                        <a onClick={handleNavigateToLogin}>Entrar</a>
+                        <a href="#">Sobre</a>
+                    </>
+                }
             </div>
 
             <div className="menu-button">

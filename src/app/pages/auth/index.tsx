@@ -2,11 +2,12 @@ import './style.css';
 import TextInput from "../../components/TextInput";
 import { useState } from "react";
 import { isValidEmail, isValidPassword } from "../../../validators/validators";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '../../components/Button';
 import CircularProgressIndicator from '../../components/circularProgressIndicator';
 import { useAuth } from '../../hooks/auth';
 import { useHook } from '../../hooks/user';
+import { toast } from 'react-toastify';
 
 type Props = {
     type: 'login' | 'create'
@@ -27,6 +28,8 @@ function Auth({type}: Props) {
 
   const { handleLogin } = useAuth();
   const { handleCreateUser } = useHook();
+
+  const navigate = useNavigate();
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -61,38 +64,43 @@ function Auth({type}: Props) {
     }
   };
 
+  const clearInputs = () => {
+    setNameInput("");
+    setEmailInput("");
+    setPasswordInput("");
+    setPasswordConfirmInput("");
+  }
+
   const handleOnClik = async () => {
-    if (type === 'login' ){
-      setClicked(true)
-      if(!emailInput || !passwordInput || (emailError || passwordError)){
-        setClicked(false);
-        return;
-      }
+    setClicked(true)
+    const conditionCreate = (!nameInput || !emailInput || !passwordInput || !passwordConfirmInput) || (nameError || emailError || passwordError)
+    
+    if(type === 'login' && (!emailInput || !passwordInput) || (emailError || passwordError)){
+      setClicked(false);
+      toast.info("Prenha todos os campos com dados válidos.", {position:'top-right'});
+      return;
+    }
+
+    if(type === 'create' && conditionCreate){
+      toast.info("Prenha todos os campos com dados válidos.", {position:'top-right'});
+      setClicked(false);
+      return;
+
+    }
   
-      const request = await handleLogin(emailInput, passwordInput);
-      if (request === true){
-        console.log(request)
-        /* Navigate to init */
-        setClicked(false);
+    const request = await ( type === 'login' ? handleLogin(emailInput, passwordInput) : handleCreateUser(nameInput, emailInput, passwordInput));
+    if (request === true){
+      clearInputs();
+      setClicked(false);
+      navigate('/');
+      if (type === 'login') {
+        toast.success("Seja bem vindo!", {position:'top-right'})
       } else {
-        setClicked(false);
-        alert(request)
+        toast.success("cadastro realizado com sucesso.", {position: 'top-right'});
       }
-
-    } else if (type === 'create'){
-      setClicked(true)
-      if((!nameInput || !emailInput || !passwordInput || !passwordConfirmInput) || 
-        (nameError || emailError || passwordError))
-      {
-        setClicked(false);
-        return;
-      }
-
-      const response = await handleCreateUser(nameInput, emailInput, passwordInput);
-      if (response === true){
-        setClicked(false);
-        console.log(response);
-      }
+    } else {
+      setClicked(false);
+      toast.error(`${request}`, {position: 'top-right'});
     }
   }
 
