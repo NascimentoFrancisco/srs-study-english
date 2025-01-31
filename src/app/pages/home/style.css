@@ -1,0 +1,26 @@
+main{
+    display: flex;
+    flex-direction: column;
+    background-color: #F7F8FD;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+.header_home{
+    display: flex;
+    flex-direction: row;
+    width: 70%;
+    justify-content: space-between;
+    margin-top: 35px;
+    border-top: 1px solid #3232;
+    color: #344055;
+    padding: 8px;
+}
+
+
+@media (max-width: 768px) {
+    .header_home{
+        width: 90%;
+    }
+}

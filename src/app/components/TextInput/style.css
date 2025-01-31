@@ -1,0 +1,35 @@
+.container-input{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+
+label{
+    font-size: 14px;
+    color: #344055;
+}
+
+input{
+    width: 100%;
+    background-color: #F8FAFC;
+    color: #5B6776;
+    border: 1px solid #4F46E573;
+    outline: none;
+    padding: 11px 20px;
+    box-sizing: border-box;
+    transition: all .3s; 
+    border-radius: 4px;
+    
+    &::placeholder{
+        color: #79808A;
+    }
+
+    &:hover{
+        background-color: #F8FAFC;
+    }
+
+    &:focus{
+        border-color: #4F46E5;
+    }
+}
