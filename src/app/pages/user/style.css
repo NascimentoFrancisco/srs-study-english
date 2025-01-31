@@ -1,0 +1,10 @@
+
+main{
+    display: flex;
+    flex-direction: column;
+    background-color: #F7F8FD;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
