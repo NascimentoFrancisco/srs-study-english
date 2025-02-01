@@ -12,3 +12,9 @@ export const getUser = async () => {
         endpoint: "/users/", method: 'GET', withAuth: true
     });
 }
+
+export const updateUser = async (name: string, email: string) => {
+    return await api<User>({
+        endpoint: "/users/", method: 'PATCH', withAuth: true, data: {name, email}
+    });
+}

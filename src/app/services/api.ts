@@ -32,8 +32,9 @@ export const api = async <TypeResponse>({
         return {
             data: request.data
         }
-    }catch(error){
+    } catch (error){
         const err = error as AxiosError;
+        //console.log(err)
         //console.log(er.response?.data);
         if (err.status === 401){
             return {

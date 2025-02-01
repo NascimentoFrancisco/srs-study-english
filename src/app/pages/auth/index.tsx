@@ -77,7 +77,7 @@ function Auth({type}: Props) {
     
     if(type === 'login' && (!emailInput || !passwordInput) || (emailError || passwordError)){
       setClicked(false);
-      toast.info("Prenha todos os campos com dados válidos.", {position:'top-right'});
+      toast.info("Prencha todos os campos com dados válidos.", {position:'top-right'});
       return;
     }
 

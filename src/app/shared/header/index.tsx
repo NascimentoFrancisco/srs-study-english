@@ -24,6 +24,16 @@ function Header() {
         }
     }
 
+    const handleNavigateAccount = () => {
+        if (auth.authStatus === 'authenticated'){
+            navigate("/user")
+        } else if(auth.authStatus === 'not_authenticated') {
+            navigate("/create");
+        } else{
+            return
+        }
+    }
+
     useEffect(() => {
         console.log(auth.authStatus);
         const menu = document.getElementById("menu_mobile");
@@ -77,13 +87,13 @@ function Header() {
                 { auth.authStatus === 'authenticated' 
                 ?   
                     <>
-                        <a href="#">Minha conta</a>
+                        <a onClick={handleNavigateAccount}>Minha conta</a>
                         <a onClick={handleNavigateToLogin}>Sair</a>
                         <a href="#">Sobre</a>
                     </>
                 :
                     <>
-                        <a href="#">Cria conta</a>
+                        <a onClick={handleNavigateAccount}>Cria conta</a>
                         <a onClick={handleNavigateToLogin}>Entrar</a>
                         <a href="#">Sobre</a>
                     </>

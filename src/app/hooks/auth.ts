@@ -1,6 +1,7 @@
 import { useAppDispatch } from "../../redux/hooks";
-import { setAuthStatus, setAuthToken} from "../../redux/slice/authSlice";
-import { login } from "../services/authRequests";
+import { setAuthStatus, setAuthToken, setUser} from "../../redux/slice/authSlice";
+import { login, changePassword } from "../services/authRequests";
+import { getUser } from "../services/userRequests";
 
 const LOCAL_SOTORAGE_ACCESS_TOKEN = import.meta.env.VITE_ACCESS_TOKEN;
 
@@ -33,13 +34,23 @@ export const useAuth = () => {
 
     const handleAuthenticateUser = async() => {
         const authToken = handleGetToken();
+        const request = await getUser();
 
-        if (!authToken){
+        if (!authToken || !request.data){
             dispatch(setAuthStatus('not_authenticated'));
+            dispatch(setAuthToken(null));
             return;
         }
+        dispatch(setUser(request.data));
         authenticate(authToken);
+    }
 
+    const handleChangePassword = async (password1: string, password2: string) => {
+        const request = await changePassword(password1, password2);
+        if(request.data){
+            return true;
+        }
+        return request.messages;
     }
 
     const handleLogout = () => {
@@ -53,6 +64,7 @@ export const useAuth = () => {
         handleLogin,
         handleGetToken,
         handleAuthenticateUser,
+        handleChangePassword,
         handleLogout
     }
 }

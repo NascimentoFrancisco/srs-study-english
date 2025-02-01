@@ -4,13 +4,21 @@ import { isValidEmail } from "../../../validators/validators";
 import TextInput from "../../components/TextInput";
 import Button from "../../components/Button";
 import CircularProgressIndicator from "../../components/circularProgressIndicator";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../../redux/hooks";
+import { useHook } from "../../hooks/user";
+import { toast } from "react-toastify";
+
 
 function AuthForm(){
 
-    const [nameInput, setNameInput] = useState("");
+    const auth = useAppSelector(state => state.auth);
+    const { handleUpdateUser } = useHook();
+    const navigate = useNavigate();
+        
+    const [nameInput, setNameInput] = useState(auth.user?.name as string);
     const [nameError, setNameError] = useState(false);
-    const [emailInput, setEmailInput] = useState("");
+    const [emailInput, setEmailInput] = useState(auth.user?.email as string);
     const [emailError, setEmailError] = useState(false);
     const [cliked, setClicked] = useState(false);
 
@@ -26,15 +34,29 @@ function AuthForm(){
         setEmailError(!isValidEmail(value));
     }
 
-    const handleOnClik = () => {
-        setClicked(!cliked);
+    const handleOnClik = async () => {
+        if (!cliked && (nameInput && !nameError) && (emailInput && !emailError)){
+            setClicked(true);
+            const request = await handleUpdateUser(nameInput, emailInput);
+            if(request === true){
+                toast.success("Dados alterados com sucesso!", {position: 'top-right'});
+                setClicked(false);
+                navigate("/");
+            } else {
+                setClicked(false);
+                toast.error(`${request}`, {position: 'top-right'});
+            }
+        } else {
+            toast.info("Corrija os dados e tente novamente!", {position: 'top-right'})
+            console.log("Aguarde..");
+        }
     }
 
     return (
         <div className="container">
             <div className="header_auth">
                 <h4>Dados do usuário</h4>
-                <span>Edite seus dados abaixo, se prciso</span>
+                <span>Edite seus dados abaixo, se preciso</span>
             </div>
             <TextInput 
                 label="Nome:"
