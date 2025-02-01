@@ -1,15 +1,4 @@
 
-.container_exercises{
-    display: flex;
-    flex-direction: column;
-    width: 70%;
-    height: 70%;
-    align-items: center;
-    border: 1px solid #3232;
-    border-radius: 4px;
-    padding: 8px;
-}
-
 .container_exerciser{
     display: flex;
     flex-direction: column;
@@ -127,9 +116,6 @@
 
 @media (max-width: 768px) {
     .header_home{
-        width: 90%;
-    }
-    .container_home{
         width: 90%;
     }
 }

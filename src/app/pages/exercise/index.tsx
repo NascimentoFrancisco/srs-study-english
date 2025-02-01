@@ -7,12 +7,14 @@ import { useSpeech } from "react-text-to-speech";
 import { useVoiceToText } from "react-speakup";
 import TextInput from '../../components/TextInput';
 import Button from '../../components/Button';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
-    textToAadio: string
+    textToAadio: string,
+    haandleExercisesUpdate: () => void,
 }
 
-function Exercise({textToAadio}: Props){
+function Exercise({textToAadio, haandleExercisesUpdate }: Props){
     const [textAnswers, setTextAnswers] = useState("");
     const [answered, setAnswered] = useState(false);
     const [hitsWithPontuation, setHitsWithPontuation] = useState(0);
@@ -151,34 +153,35 @@ function Exercise({textToAadio}: Props){
         
         //const data = {"difficult": levels[index]}
         //Create requeste to send data
-        
+
+        haandleExercisesUpdate();
     }
 
     return (
-        <div className="container_exercises">
-            <div className="container_exerciser">
-                { exercisePronunciation &&
-                    <div className="header_result">
-                        {counterExercisePronuciation > 0 
-                            ? 
-                                <span>Você deve exercitar a pronúcia {counterExercisePronuciation} vezes</span>
-                            :
-                                <span>Parabéns, clique em finalizar para fazer o próximo exercício.</span>
-                        }
-                    </div>
-                }
-                
-                <div className="controls_audio">
-                    { speechStatus === "started"
-                        ?
-                            <div className="play_pause" onClick={stop}>
-                                <IoStopCircle size={34} />
-                            </div> 
+
+        <div className="container_exerciser">
+            { exercisePronunciation &&
+                <div className="header_result">
+                    {counterExercisePronuciation > 0 
+                        ? 
+                            <span>Você deve exercitar a pronúcia {counterExercisePronuciation} vezes</span>
                         :
-                            <div className="play_pause" onClick={start}>
-                                <HiSpeakerWave size={34} />
-                            </div>
+                            <span>Parabéns, clique em finalizar para fazer o próximo exercício.</span>
                     }
+                </div>
+            }
+                
+            <div className="controls_audio">
+                { speechStatus === "started"
+                    ?
+                        <div className="play_pause" onClick={stop}>
+                            <IoStopCircle size={34} />
+                        </div> 
+                    :
+                        <div className="play_pause" onClick={start}>
+                            <HiSpeakerWave size={34} />
+                        </div>
+                }
                 </div>
 
                 { exercisePronunciation &&
@@ -213,81 +216,79 @@ function Exercise({textToAadio}: Props){
                         </div>
                         { averageRateVoiceExercise.length < 3 &&
                             <div className="header_pronuciation">
-                                {transcript}
-                            </div>
-                        }
-                        
-                        { transcript && averageRateVoiceExercise.length < 3 && 
-                            <div className="button_pronunciation">
-                                <Button
-                                    children="Exercitar novamente"
-                                    onClick={handleExerciseAgain}
-                                 />
-                            </div>
-                        }            
-                    </div>
-
-                }
-
-                { !exercisePronunciation &&
-                <div className="containser_answers">
-                    { !answered &&
-                        <TextInput 
-                            label='Sua resposta' 
-                            value={textAnswers}
-                            onChange={onChageTextAnswers}
-                            type='text'
-                            error={false}
-                            placeholder='Transcreva o que você ouvio no áudio...'
-                        />
+                            {transcript}
+                        </div>
                     }
                     
-                    { answered &&
-                        <>
-                            <div className='ansewrs'>
-                                <b>Texto correto:</b> <Text />
-                            </div>
-                            <div className='ansewrs'>
-                                <b>Sua resposta:</b> { textAnswers }
-                            </div>
-
-                            <div className="divider"></div>
-
-                            <div className="results">
-                            <div className="header_result">
-                                <span>Taxas de acerto</span>
-                            </div>
-                            <div className="datas_result">
-                                Considarando a pontuação:
-                                <span style={{color: colorHitsWithPont}}> { hitsWithPontuation }%</span>
-                            </div>
-                            <div className="datas_result">
-                                Desconsidarando a pontuação: 
-                                <span style={{color: colorHitsWithoutPont}}> { hitsWithoutPontuation }%</span> 
-                            </div>
-                            </div>
-                        </>
-                    }
-                    { answered 
-                        ?
-                        <div className="button_answers">
-                            <Button 
-                                children="Exercitar pronuncia"
-                                onClick={() => setExercisePronunciation(true)}
+                    { transcript && averageRateVoiceExercise.length < 3 && 
+                        <div className="button_pronunciation">
+                            <Button
+                                children="Exercitar novamente"
+                                onClick={handleExerciseAgain}
                              />
                         </div>
-                        :
-                        <div className="button_answers">
-                            <Button 
-                                children="Responder"
-                                onClick={toRespond}
-                             />
-                        </div>
-                    }
+                    }            
+                </div>
 
-                </div> 
+            }
+
+            { !exercisePronunciation &&
+            <div className="containser_answers">
+                { !answered &&
+                    <TextInput 
+                        label='Sua resposta' 
+                        value={textAnswers}
+                        onChange={onChageTextAnswers}
+                        type='text'
+                        error={false}
+                        placeholder='Transcreva o que você ouvio no áudio...'
+                    />
                 }
-            </div>
+                    
+                { answered &&
+                    <>
+                        <div className='ansewrs'>
+                            <b>Texto correto:</b> <Text />
+                        </div>
+                        <div className='ansewrs'>
+                            <b>Sua resposta:</b> { textAnswers }
+                        </div>
+                        <div className="divider"></div>
+
+                        <div className="results">
+                        <div className="header_result">
+                            <span>Taxas de acerto</span>
+                        </div>
+                        <div className="datas_result">
+                            Considarando a pontuação:
+                            <span style={{color: colorHitsWithPont}}> { hitsWithPontuation }%</span>
+                        </div>
+                        <div className="datas_result">
+                            Desconsidarando a pontuação: 
+                            <span style={{color: colorHitsWithoutPont}}> { hitsWithoutPontuation }%</span> 
+                        </div>
+                        </div>
+                    </>
+                }
+                { answered 
+                    ?
+                    <div className="button_answers">
+                        <Button 
+                            children="Exercitar pronuncia"
+                            onClick={() => setExercisePronunciation(true)}
+                         />
+                    </div>
+                    :
+                    <div className="button_answers">
+                        <Button 
+                            children="Responder"
+                            onClick={toRespond}
+                         />
+                    </div>
+                }
+
+            </div> 
+            }
         </div>
     );
 }

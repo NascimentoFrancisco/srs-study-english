@@ -1,20 +1,95 @@
-import Exercise from '../../components/exercise';
+import { useNavigate } from 'react-router-dom';
+import Exercise from '../exercise';
+import { ExerciseResponse } from "../../@types/exercise/exercise";
 import './style.css';
 import { IoMdAddCircle } from "react-icons/io";
+import { useEffect, useState } from 'react';
+import { exerciseHooks } from '../../hooks/exercise';
+import { toast } from 'react-toastify';
+import Loading from '../../components/loading';
+import IsEmpty from '../../components/isEmpty';
 
 function Home(){
+
+    const navigate = useNavigate();
+    const [showTooltip, setShowTooltip] = useState(false);
+    const [loadingRequest, SetLoadingRequest] = useState(true);
+    const [updatedExercises, setUpdatedExercises] = useState(false);
+    const [exercises, setExercises] = useState(Array<ExerciseResponse>);
+    const { handleGetPendingExercises } = exerciseHooks();
     
-    //Thank you so much for coming here to help me.
+    const handleExercises = async () => {
+
+        if (!updatedExercises){
+            const request = await handleGetPendingExercises();
+            if(Array.isArray(request) && request.every(isExerciseResponse)){
+                setExercises(request);
+                console.log(exercises);
+                SetLoadingRequest(false);
+            } else {
+                toast.error(`${request}`, {position: 'top-right'});
+                SetLoadingRequest(false);
+            }
+
+            setUpdatedExercises(true);
+        }
+
+    }
+
+    function isExerciseResponse(item: any): item is ExerciseResponse {
+        return (
+            typeof item === "object" &&
+            item !== null &&
+            "id" in item &&
+            "text" in item 
+        );
+    }
+
+    const handleExercisesUpdate = () => {
+        setUpdatedExercises(false);
+        SetLoadingRequest(true);
+        setExercises([]);
+    }
+
+    useEffect(() => { 
+        handleExercises();
+    }, [updatedExercises]);
+
     return (
         <main>
             <div className="header_home">
                 <h3>Exercícios pendentes</h3>
-                <a className="add_icon">
-                    <IoMdAddCircle size={30}/>
-                </a>
+                <div 
+                    className='add_icon_container' onMouseEnter={() => setShowTooltip(true)}
+                    onMouseLeave={() => setShowTooltip(false)} onClick={() => navigate("/exercises")}
+                >
+                    <IoMdAddCircle size={30} className="add_icon" />
+                    {showTooltip && <span className="tooltip">Adicionar exercício</span>}
+                </div>
             </div>
-            
-            <Exercise textToAadio="I love car." />
+
+            {loadingRequest &&
+                <Loading />
+            }
+
+            {!loadingRequest &&
+                <>
+                    { exercises.length > 0 
+                    ?
+                        <div className="container_list_exercises">
+                            {exercises.map((exercise) => (
+                                    <Exercise textToAadio={exercise.text} haandleExercisesUpdate={handleExercisesUpdate} />
+                            ))}
+                        </div>
+                    :
+                        <IsEmpty 
+                            title='Sem Exercícios' 
+                            subtitle='Clique no botão abaixo e cadastre seus exercícios.'
+                            redirect={() => navigate("/exercises")}
+                        />
+                    }
+                </>
+            }
             
         </main>
     )
