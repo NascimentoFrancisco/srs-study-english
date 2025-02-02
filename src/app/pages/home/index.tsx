@@ -90,13 +90,18 @@ function Home(){
                     ?
                         <div className="container_list_exercises">
                             {exercises.map((exercise, index) => (
-                                    <Exercise textToAadio={exercise.text} haandleExercisesUpdate={handleExercisesUpdate} key={index}/>
+                                    <Exercise 
+                                        textToAadio={exercise.text} 
+                                        exerciseId={exercise.id}
+                                        haandleExercisesUpdate={handleExercisesUpdate} 
+                                        key={index}
+                                    />
                             ))}
                         </div>
                     :
                         <IsEmpty 
-                            title='Sem Exercícios' 
-                            subtitle='Clique no botão abaixo e cadastre seus exercícios.'
+                            title='Sem Exercícios pendentes' 
+                            subtitle='Clique no botão abaixo e cadastre novos exercícios.'
                             redirect={() => navigate("/exercises")}
                         />
                     }

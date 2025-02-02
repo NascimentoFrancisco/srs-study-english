@@ -69,7 +69,6 @@ export const exerciseHooks = () => {
     const handleUpdateLevelExercise = async (exerciseId: string, difficulty: string) => {
         const request = await updateLevelExercise(exerciseId, difficulty);
         if (request.data){
-            console.log(request.data);
             return true;
         }
         return request.messages

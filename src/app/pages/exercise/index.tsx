@@ -7,14 +7,17 @@ import { useSpeech } from "react-text-to-speech";
 import { useVoiceToText } from "react-speakup";
 import TextInput from '../../components/TextInput';
 import Button from '../../components/Button';
-import { useNavigate } from 'react-router-dom';
+import { exerciseHooks } from '../../hooks/exercise';
+import { toast } from 'react-toastify';
+import CircularProgressIndicator from '../../components/circularProgressIndicator';
 
 type Props = {
     textToAadio: string,
+    exerciseId: string,
     haandleExercisesUpdate: () => void,
 }
 
-function Exercise({textToAadio, haandleExercisesUpdate }: Props){
+function Exercise({textToAadio, exerciseId, haandleExercisesUpdate }: Props){
     const [textAnswers, setTextAnswers] = useState("");
     const [answered, setAnswered] = useState(false);
     const [hitsWithPontuation, setHitsWithPontuation] = useState(0);
@@ -24,8 +27,10 @@ function Exercise({textToAadio, haandleExercisesUpdate }: Props){
     const [exercisePronunciation, setExercisePronunciation] = useState(false);
     const [statusTextToVoice, setStatusTextToVoice] = useState(false);
     const [counterExercisePronuciation, setCounterExercisePronuciation ] = useState(3);
+    const [clicked, setClicked] = useState(false);
 
     const [averageRateVoiceExercise, SetAverageRateVoiceExercise] = useState(Array<number>);
+    const { handleUpdateLevelExercise } = exerciseHooks();
 
     const { Text, speechStatus, start, stop, } = useSpeech({text: textToAadio, lang: "en"});
     const { startListening, stopListening, transcript, reset } = useVoiceToText({
@@ -144,17 +149,28 @@ function Exercise({textToAadio, haandleExercisesUpdate }: Props){
         return;
     }
 
-    const handleFinishExercise = () => {
-        //const avarge = averageRateVoiceExercise.reduce((accumulator, value) => accumulator + value, 0) / 3;
-        //const avargeTotal = (avarge + hitsWithPontuation + hitsWithoutPontuation) / 3;
+    const handleFinishExercise = async () => {
+        if(clicked) return
 
-        //const levels = ["easy", "moderate", "reasonable", "difficult", "very_difficult"];
-        //const index = Math.min(4, Math.floor((100 - avargeTotal) / 20));
+        setClicked(true);
+        const avarge = averageRateVoiceExercise.reduce((accumulator, value) => accumulator + value, 0) / 3;
+        const avargeTotal = (avarge + hitsWithPontuation + hitsWithoutPontuation) / 3;
+
+        const levels = ["easy", "moderate", "reasonable", "difficult", "very_difficult"];
+        const index = Math.min(4, Math.floor((100 - avargeTotal) / 20));
         
-        //const data = {"difficult": levels[index]}
-        //Create requeste to send data
+        const data = {"difficult": levels[index]}
 
-        haandleExercisesUpdate();
+        const request = await handleUpdateLevelExercise(exerciseId, data.difficult);
+        if (request === true){
+            setClicked(false);
+            toast.success("Progresso salvo com sucesso!", {position: 'top-right'})
+            haandleExercisesUpdate();
+        } else {
+            setClicked(false);
+            toast.error(`${request}`, {position: 'top-right'});
+        }
+
     }
 
     return (
@@ -207,10 +223,10 @@ function Exercise({textToAadio, haandleExercisesUpdate }: Props){
                                     <div className="header_result">
                                         <span>Exercício finalizado</span>
                                     </div>
-                                    <Button
-                                        children="Finalizar"
-                                        onClick={handleFinishExercise}
-                                    />
+                                    <button className="finish_button_exercise" onClick={handleFinishExercise}>
+                                        Finalizar
+                                        {clicked && <CircularProgressIndicator />}
+                                    </button>
                                 </>
                             }
                         </div>
