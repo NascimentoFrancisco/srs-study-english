@@ -1,5 +1,5 @@
-import { createExercise, getPendingExercises } from "../services/exercisesRequests";
-import { RequestExercise } from "../@types/exercise/exerciseRequest";
+import { createExercise, getPendingExercises, getAllExercisesByUser, updateExercise , updateLevelExercise} from "../services/exercisesRequests";
+import { RequestExercise, RequestUpdateExercise } from "../@types/exercise/exerciseRequest";
 
 
 export const exerciseHooks = () => {
@@ -38,8 +38,48 @@ export const exerciseHooks = () => {
         return request.messages
     }
 
+    const handleGetAllExercisesByUser = async () => {
+
+        const request = await getAllExercisesByUser();
+        if (request.data){
+            //console.log(request.data);
+            return request.data;
+        }
+        return request.messages
+    }
+
+    const handleUpdateExercise = async (
+        exerciseId: string, text: string, translation: string, observation: string
+    ) => {
+        const requestUpdateExercise: RequestUpdateExercise = {
+            text: text,
+            translation: translation,
+            observation: observation
+        }
+
+        const request = await updateExercise(exerciseId, requestUpdateExercise);
+        if (request.data){
+            console.log(request.data);
+            return true;
+        }
+        return request.messages
+
+    }
+
+    const handleUpdateLevelExercise = async (exerciseId: string, difficulty: string) => {
+        const request = await updateLevelExercise(exerciseId, difficulty);
+        if (request.data){
+            console.log(request.data);
+            return true;
+        }
+        return request.messages
+    }
+
     return {
         handleCreateExercise,
-        handleGetPendingExercises
+        handleGetPendingExercises,
+        handleGetAllExercisesByUser,
+        handleUpdateExercise,
+        handleUpdateLevelExercise
     }
 }

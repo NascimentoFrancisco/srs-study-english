@@ -54,6 +54,11 @@ main{
     opacity: 1;
 }
 
+.actions_header_home{
+    display: flex;
+    gap: 10px;
+}
+
 .container_list_exercises{
     display: flex;
     flex-direction: column;

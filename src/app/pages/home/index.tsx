@@ -3,6 +3,7 @@ import Exercise from '../exercise';
 import { ExerciseResponse } from "../../@types/exercise/exercise";
 import './style.css';
 import { IoMdAddCircle } from "react-icons/io";
+import { FaListOl } from "react-icons/fa6";
 import { useEffect, useState } from 'react';
 import { exerciseHooks } from '../../hooks/exercise';
 import { toast } from 'react-toastify';
@@ -26,12 +27,13 @@ function Home(){
                 setExercises(request);
                 console.log(exercises);
                 SetLoadingRequest(false);
+                setUpdatedExercises(true);
             } else {
                 toast.error(`${request}`, {position: 'top-right'});
                 SetLoadingRequest(false);
+                setUpdatedExercises(true);
             }
 
-            setUpdatedExercises(true);
         }
 
     }
@@ -59,6 +61,15 @@ function Home(){
         <main>
             <div className="header_home">
                 <h3>Exercícios pendentes</h3>
+            <div className="actions_header_home">
+                <div 
+                    className='add_icon_container' onMouseEnter={() => setShowTooltip(true)}
+                    onMouseLeave={() => setShowTooltip(false)} onClick={() => navigate("/exercises-list")}
+                >
+                    <FaListOl size={30} className="add_icon" />
+                    {showTooltip && <span className="tooltip">listar todos os exercícios</span>}
+                </div>
+
                 <div 
                     className='add_icon_container' onMouseEnter={() => setShowTooltip(true)}
                     onMouseLeave={() => setShowTooltip(false)} onClick={() => navigate("/exercises")}
@@ -66,6 +77,7 @@ function Home(){
                     <IoMdAddCircle size={30} className="add_icon" />
                     {showTooltip && <span className="tooltip">Adicionar exercício</span>}
                 </div>
+            </div>
             </div>
 
             {loadingRequest &&

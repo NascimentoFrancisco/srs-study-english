@@ -6,3 +6,9 @@ export type RequestExercise = {
     review_date?: string,
     observation: string
 }
+
+export type RequestUpdateExercise = {
+    text: string,
+    translation: string,
+    observation: string
+}
