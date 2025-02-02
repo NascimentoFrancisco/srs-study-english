@@ -1,4 +1,4 @@
-import { createExercise, getPendingExercises, getAllExercisesByUser, updateExercise , updateLevelExercise} from "../services/exercisesRequests";
+import { createExercise, getPendingExercises, getAllExercisesByUser, updateExercise , updateLevelExercise, deleteExercise} from "../services/exercisesRequests";
 import { RequestExercise, RequestUpdateExercise } from "../@types/exercise/exerciseRequest";
 
 
@@ -75,11 +75,20 @@ export const exerciseHooks = () => {
         return request.messages
     }
 
+    const handldeleteExercise = async (exerciseId: string) => {
+        const request = await deleteExercise(exerciseId);
+        if (request.data){
+            return true;
+        }
+        return request.messages
+    }
+
     return {
         handleCreateExercise,
         handleGetPendingExercises,
         handleGetAllExercisesByUser,
         handleUpdateExercise,
-        handleUpdateLevelExercise
+        handleUpdateLevelExercise,
+        handldeleteExercise
     }
 }

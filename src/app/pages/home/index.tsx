@@ -89,8 +89,8 @@ function Home(){
                     { exercises.length > 0 
                     ?
                         <div className="container_list_exercises">
-                            {exercises.map((exercise) => (
-                                    <Exercise textToAadio={exercise.text} haandleExercisesUpdate={handleExercisesUpdate} />
+                            {exercises.map((exercise, index) => (
+                                    <Exercise textToAadio={exercise.text} haandleExercisesUpdate={handleExercisesUpdate} key={index}/>
                             ))}
                         </div>
                     :

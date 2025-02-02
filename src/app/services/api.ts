@@ -29,6 +29,12 @@ export const api = async <TypeResponse>({
             data: data ?? data,
         });
 
+        if(request.status === 204){
+            return {
+                data: {"msg": "Dado excuíldo."}
+            }
+        }
+
         return {
             data: request.data
         }

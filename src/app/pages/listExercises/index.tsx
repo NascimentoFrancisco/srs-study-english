@@ -9,6 +9,7 @@ import Loading from "../../components/loading";
 import IsEmpty from "../../components/isEmpty";
 import { useAppDispatch } from "../../../redux/hooks";
 import { setExerciseUse } from "../../../redux/slice/exerciseSlice";
+import ModalConfirmation from "../../components/modalConfirmation";
 
 
 function ListExercises() {
@@ -16,12 +17,15 @@ function ListExercises() {
     const dispatch = useAppDispatch();
 
     const [showTooltip, setShowTooltip] = useState(false);
-    const [loadingRequest, SetLoadingRequest] = useState(false);
+    const [loadingRequest, setLoadingRequest] = useState(false);
     const [listExerciseUpdate, setListExerciseUpdate] = useState(false);
     const [allExercises, setAllExercises] = useState(Array<ExerciseResponse>);
+    const [showModal, setShowModal] = useState(false);
+    const [clickeModal, setClickeModal ] = useState(false);
+    const [exerciseIdDel, setExerciseIdDel] = useState("");
     
     const navigate = useNavigate();
-    const { handleGetAllExercisesByUser } = exerciseHooks();
+    const { handleGetAllExercisesByUser, handldeleteExercise } = exerciseHooks();
 
     const handleListExerciseUpdate = async() => {
 
@@ -30,11 +34,11 @@ function ListExercises() {
             if(Array.isArray(request) && request.every(isExerciseResponse)){
                 setAllExercises(request);
                 console.log(allExercises);
-                SetLoadingRequest(false);
+                setLoadingRequest(false);
                 setListExerciseUpdate(true);
             } else {
                 toast.error(`${request}`, {position: 'top-right'});
-                SetLoadingRequest(false);
+                setLoadingRequest(false);
                 setListExerciseUpdate(true);
             }
 
@@ -55,6 +59,37 @@ function ListExercises() {
         dispatch(setExerciseUse(exercise));
         navigate("/exercises-edit");
     }
+
+    const handleShowModal = (exerciseId: string) => {
+        setShowModal(true)
+        setExerciseIdDel(exerciseId);
+    }
+
+    const handleClosedModal = () => {
+        if(clickeModal) return
+
+        setClickeModal(false);
+        setShowModal(!showModal)
+    }
+
+    const handleDeleteExercise = async () => {
+        if(clickeModal) return
+        setClickeModal(true);
+
+        //console.log(exerciseIdDel)
+        const request = await handldeleteExercise(exerciseIdDel);
+        if(request === true){
+            toast.success("Exercício excluído com sucesso!", {position: 'top-right'});
+            setListExerciseUpdate(false);
+            setAllExercises([]);
+            setLoadingRequest(true);
+            setClickeModal(false);
+            setShowModal(false);
+        } else {
+            setClickeModal(false);
+            toast.error(`${request}`, {position: 'top-right'});
+        }
+    }
     
     useEffect(() => {
         handleListExerciseUpdate();
@@ -62,6 +97,14 @@ function ListExercises() {
 
     return (
         <main>
+            <ModalConfirmation 
+                title="Confirmação de exclusão de exercíco."
+                text="Você realmente deseja excluir o exercício selecionado."
+                show={showModal}
+                cliked={clickeModal}
+                handleShow={handleClosedModal}
+                action={handleDeleteExercise}
+            />
             <div className="header_list_all_exercises">
                 <h4>Todos os exercícos do usuário</h4>
             </div>
@@ -100,7 +143,7 @@ function ListExercises() {
                                     </div>
                                     <div 
                                         className='action_exercise_container' onMouseEnter={() => setShowTooltip(true)}
-                                        onMouseLeave={() => setShowTooltip(false)} onClick={() => navigate("/exercises")}
+                                        onMouseLeave={() => setShowTooltip(false)} onClick={() => handleShowModal(exercise.id)}
                                     >
                                         <MdDeleteForever size={30} className="action_exercise_icon" />
                                         {showTooltip && <span className="action_tooltip">Excluir exercício</span>}
