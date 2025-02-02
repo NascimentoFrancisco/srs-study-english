@@ -18,9 +18,65 @@ main{
     padding: 8px;
 }
 
+.add_icon_container {
+    position: relative;
+    display: inline-block;
+}
+
+.add_icon{
+    cursor: pointer;
+}
+
+.add_icon:hover{
+    color: #322bc4;
+}
+
+.tooltip {
+    visibility: visible;
+    background-color: #322bc4;
+    color: white;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+}
+
+.add_icon_container:hover .tooltip {
+    opacity: 1;
+}
+
+.actions_header_home{
+    display: flex;
+    gap: 10px;
+}
+
+.container_list_exercises{
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    height: 70%;
+    align-items: center;
+    border: 1px solid #3232;
+    border-radius: 4px;
+    padding: 8px;
+    overflow: auto;
+    gap: 8px;
+}
 
 @media (max-width: 768px) {
     .header_home{
+        width: 90%;
+    }
+    .container_list_exercises{
         width: 90%;
     }
 }

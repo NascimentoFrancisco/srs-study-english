@@ -1,0 +1,112 @@
+main{
+    display: flex;
+    flex-direction: column;
+    background-color: #F7F8FD;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+.header_list_all_exercises{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 70%;
+    justify-content: space-between;
+    margin-top: 35px;
+    border-top: 1px solid #3232;
+    color: #344055;
+    padding: 8px;
+}
+
+.container_list_all_exercises{
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    height: 70%;
+    align-items: center;
+    border: 1px solid #3232;
+    border-radius: 4px;
+    padding: 8px;
+    overflow: auto;
+    gap: 8px;
+}
+
+.exercise_of_list{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    height: auto;
+    border: 1px solid #4F46E5;
+    border-radius: 4px;
+    padding: 8px;
+}
+
+.values_exercise{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    color: #344055;
+    gap: 2px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.actions_of_exercise_of_list{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    margin-top: 20px;
+    border-top: 1px solid #3232;
+    color: #344055;
+    padding: 8px;
+    gap: 15px;
+}
+
+.action_exercise_container {
+    position: relative;
+    display: inline-block;
+}
+
+.action_exercise_icon{
+    cursor: pointer;
+}
+
+.action_exercise_icon:hover{
+    color: #322bc4;
+}
+
+.action_tooltip {
+    visibility: visible;
+    background-color: #322bc4;
+    color: white;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+}
+
+.action_exercise_container:hover .action_tooltip {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .header_list_all_exercises{
+        width: 90%;
+    }
+    .container_list_all_exercises{
+        width: 90%;
+    }
+}

@@ -1,18 +1,20 @@
 import { useRoutes } from "react-router-dom";
 import Auth from "../pages/auth";
 import Home from "../pages/home";
-import User from "../pages/user";
 import Exercises from "../pages/exercises";
+import { AuthMiddleware } from "../middlewares/authMiddleware";
+import Users from "../pages/user";
+import ListExercises from "../pages/listExercises";
 
 function MainRouters() {
     const routers = useRoutes([
         {
             index: true,
-            element:  <Home />
+            element: <AuthMiddleware> <Home /> </AuthMiddleware> 
         },
         {
             path: '/login',
-            element: <Auth type="login"/>
+            element:  <Auth type="login"/>
         },
         {
             path: '/create',
@@ -21,19 +23,23 @@ function MainRouters() {
            
         {
             path: "/user",
-            element: <User type="edit-user"/>
+            element: <AuthMiddleware> <Users type="edit-user"/> </AuthMiddleware> 
         },   
         {
             path: "/change-password",
-            element: <User type="change-password" />
+            element: <AuthMiddleware> <Users type="change-password" /> </AuthMiddleware>
+        },
+        {
+            path:"/exercises-list",
+            element: <AuthMiddleware> <ListExercises /> </AuthMiddleware>
         },
         {
             path: '/exercises',
-            element: <Exercises type="create" />
+            element: <AuthMiddleware><Exercises type="create" /> </AuthMiddleware>
         },
         {
             path: '/exercises-edit',
-            element: <Exercises type="edit" />
+            element: <AuthMiddleware><Exercises type="edit" /> </AuthMiddleware>
         }
     ]);
 

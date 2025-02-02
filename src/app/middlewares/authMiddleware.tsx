@@ -10,7 +10,6 @@ type Props = {
 export const AuthMiddleware = ({children}: Props) => {
     
     const { authStatus } = useAppSelector(state => state.auth);
-    console.log(authStatus);
 
     if( authStatus === 'authenticated' ){
         return children;

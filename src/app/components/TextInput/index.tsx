@@ -7,16 +7,18 @@ type Props = {
     label: string,
     placeholder?: string,
     type: 'text' | 'password' | 'date' | 'email',
+    lang?: 'pt-BR' | 'en-US'
     error: boolean,
     errorMessage?: string
 }
 
-function TextInput({value, onChange, label, placeholder, errorMessage, error = false, type = 'text'}: Props){
+function TextInput({value, onChange, label, placeholder, errorMessage, error = false, type = 'text', lang = 'pt-BR'}: Props){
     const referenceId = useId();    
     return (
         <div className="container-input">
             <label htmlFor={referenceId}>{label}</label>
             <input
+                lang={lang}
                 id={referenceId}
                 type={type}
                 placeholder={placeholder}

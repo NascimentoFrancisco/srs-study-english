@@ -8,10 +8,10 @@ main{
     height: 100vh;
 }
 
-.container{
+.container_exercises{
     display: flex;
     flex-direction: column;
-    width: 60%;
+    width: 70%;
     height: auto;
     border: 1px solid #b4b4b4;
     background-color: #F8FAFC;
@@ -37,8 +37,8 @@ main{
     margin-bottom: 30px;
 }
 
-@media (max-width: 768px) {
-    .container{
+@media (max-width: 830px) {
+    .container_exercises{
         width: 90%;
     }
 }

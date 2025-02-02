@@ -1,18 +1,20 @@
 import "./style.css"
 import { useEffect, useState } from "react";
-import { Exercise } from "../../@types/exercise/exercise";
 import TextInput from "../../components/TextInput";
 import CircularProgressIndicator from "../../components/circularProgressIndicator";
 import Button from "../../components/Button";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { exerciseHooks } from "../../hooks/exercise";
+import { toast } from "react-toastify";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { setExerciseUse } from "../../../redux/slice/exerciseSlice";
 
 type Props = {
     type: 'create' | 'edit'
-    exercise?: Exercise,
 }
 
-function Exircises({type, exercise}: Props){
+function Exircises({type}: Props){
 
     const [textInput, setTextInput] = useState("");
     const [textError, setTextError] = useState(false);
@@ -22,6 +24,21 @@ function Exircises({type, exercise}: Props){
     const [cliked, setClicked] = useState(false);
 
     const navigate = useNavigate();
+    const { handleCreateExercise, handleUpdateExercise } = exerciseHooks();
+
+    const exerciseUseState = useAppSelector(state => state.exercixeUse.exerciseUseState);
+    const dispatch = useAppDispatch();
+
+    const handleGetUseToEdit = () => {
+        if(exerciseUseState && type === 'edit'){
+            setTextInput(exerciseUseState.text);
+            setTranslationInput(exerciseUseState.translation);
+            setObservationInput(exerciseUseState.observation ? exerciseUseState.observation : "")
+        }
+        if(type === 'edit' && !exerciseUseState){
+            navigate('/exercises-list', {replace: true});
+        }
+    }
 
     const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -40,51 +57,54 @@ function Exircises({type, exercise}: Props){
         setObservationInput(value);
     };
 
-    const handleOnClik = () => {
-        setClicked(!cliked);
+    const handleOnClik = async () => {
+        setClicked(true);
 
-        if (type === 'create'){        
-            const now = new Date();
-            const brNow = new Date(now.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
-            const formattedDate = brNow.toISOString().split("T")[0];
-
-            const data = {
-                text: textInput,
-                translation: translationInput,
-                difficulty: "very_difficult",
-                audio_url: "",
-                review_date: formattedDate,
-                observation: observationInput  
+        if (type === 'create'){
+            
+            const request = await handleCreateExercise(textInput, translationInput, "", observationInput);
+            if(request === true){
+                setClicked(false);
+                setTextInput("");
+                setTranslationInput("");
+                setObservationInput("");
+                toast.success("Exercício adicionado com sucesso!", {position: 'top-right'});
+                navigate('/exercises-list', {replace: true});
+            } else {
+                setClicked(false);
+                toast.error(`${request}`, {position: 'top-right'});
             }
 
-            console.log(data);
         } else {
-            const data = {
-                text: textInput,
-                translation: translationInput,
-                audio_url: "",
-                observation: observationInput 
+            if(exerciseUseState){
+                const request = await handleUpdateExercise(
+                    exerciseUseState?.id, textInput, translationInput, observationInput
+                );
+                if(request === true){
+                    setClicked(false);
+                    setTextInput("");
+                    setTranslationInput("");
+                    setObservationInput("");
+                    dispatch(setExerciseUse(null));
+                    toast.success("Exercício adicionado com sucesso!", {position: 'top-right'});
+                    navigate('/exercises-list', {replace: true});
+                } else {
+                    setClicked(false);
+                    toast.error(`${request}`, {position: 'top-right'});
+                }
             }
-
-            console.log(data);
+            
         }
 
     }
 
     useEffect(() => {
-        if(type === 'edit' && exercise){
-            setTextInput(exercise.text);
-            setTranslationInput(exercise.translation);
-            setObservationInput(exercise.observation ? exercise.observation : "")
-        }
-        if(type === 'edit' && !exercise){
-            navigate('/');
-        }
-    });
+        handleGetUseToEdit();
+    }, []);
 
     return (
         <main>
-            <div className="container">
+            <div className="container_exercises">
                 { type === 'create' 
                     ? 
                         <div className="header_auth">
@@ -103,6 +123,7 @@ function Exircises({type, exercise}: Props){
                     value={textInput}
                     onChange={handleTextChange}
                     type="text"
+                    lang='en-US'
                     placeholder="Texto em inglês..."
                     error={textError}
                     errorMessage={textError ? "Este campo é obrigatório" : ""}

@@ -77,7 +77,7 @@ function Auth({type}: Props) {
     
     if(type === 'login' && (!emailInput || !passwordInput) || (emailError || passwordError)){
       setClicked(false);
-      toast.info("Prenha todos os campos com dados válidos.", {position:'top-right'});
+      toast.info("Prencha todos os campos com dados válidos.", {position:'top-right'});
       return;
     }
 
@@ -164,8 +164,8 @@ function Auth({type}: Props) {
 
           <div className='footer_auth'>
             { type === 'create' 
-              ? <Link to="/login">Se já possi conta, clique aqui para entrar</Link>
-              : <Link to="/create">Não possi conta? Clique aqui para crair uma</Link>
+              ? <Link to="/login">Se já possui conta, clique aqui para entrar</Link>
+              : <Link to="/create">Não possui conta? Clique aqui para crair uma</Link>
             }
 
           </div>

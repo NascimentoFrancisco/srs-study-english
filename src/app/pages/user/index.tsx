@@ -5,7 +5,7 @@ type Props = {
     type: 'edit-user' | 'change-password'
 }
 
-function User({ type }: Props){
+function Users({ type }: Props){
 
     return (
         <main>
@@ -19,4 +19,4 @@ function User({ type }: Props){
     );
 }
 
-export default User;
+export default Users;

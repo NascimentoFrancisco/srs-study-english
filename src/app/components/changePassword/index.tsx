@@ -4,7 +4,9 @@ import { isValidPassword } from "../../../validators/validators";
 import TextInput from "../../components/TextInput";
 import Button from "../../components/Button";
 import CircularProgressIndicator from "../../components/circularProgressIndicator";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from '../../hooks/auth';
+import { toast } from "react-toastify";
 
 function ChangePassword(){
     
@@ -13,6 +15,9 @@ function ChangePassword(){
     const [passwordConfirmInput, setPasswordConfirmInput] = useState("");
     const [errorMessagePassword, setErrorMessagePassword] = useState("");
     const [cliked, setClicked] = useState(false);
+    
+    const navigate = useNavigate();
+    const { handleChangePassword } = useAuth();
 
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -34,8 +39,21 @@ function ChangePassword(){
         }
     };
 
-    const handleOnClik = () => {
-        setClicked(!cliked);
+    const handleOnClik = async () => {
+        if(!cliked && (passwordInput && !passwordError) && passwordConfirmInput){
+            setClicked(true);
+            const request = await handleChangePassword(passwordInput, passwordConfirmInput);
+            if(request === true){
+                toast.success("Senha alterada com sucesso!", {position: 'top-right'});
+                setClicked(false);
+                navigate("/");
+            } else {
+                setClicked(false);
+                toast.error(`${request}`, {position: 'top-right'});
+            }
+        }else{
+            toast.info("Corrija os dados e tente novamente!", {position: 'top-right'})
+        }
     }
 
     return (

@@ -7,12 +7,19 @@ import { useSpeech } from "react-text-to-speech";
 import { useVoiceToText } from "react-speakup";
 import TextInput from '../../components/TextInput';
 import Button from '../../components/Button';
+import { exerciseHooks } from '../../hooks/exercise';
+import { toast } from 'react-toastify';
+import CircularProgressIndicator from '../../components/circularProgressIndicator';
 
 type Props = {
-    textToAadio: string
+    textToAadio: string,
+    exerciseId: string,
+    translation: string,
+    observation?: string,
+    haandleExercisesUpdate: () => void,
 }
 
-function Exercise({textToAadio}: Props){
+function Exercise({textToAadio, exerciseId, translation, observation, haandleExercisesUpdate }: Props){
     const [textAnswers, setTextAnswers] = useState("");
     const [answered, setAnswered] = useState(false);
     const [hitsWithPontuation, setHitsWithPontuation] = useState(0);
@@ -22,8 +29,10 @@ function Exercise({textToAadio}: Props){
     const [exercisePronunciation, setExercisePronunciation] = useState(false);
     const [statusTextToVoice, setStatusTextToVoice] = useState(false);
     const [counterExercisePronuciation, setCounterExercisePronuciation ] = useState(3);
+    const [clicked, setClicked] = useState(false);
 
     const [averageRateVoiceExercise, SetAverageRateVoiceExercise] = useState(Array<number>);
+    const { handleUpdateLevelExercise } = exerciseHooks();
 
     const { Text, speechStatus, start, stop, } = useSpeech({text: textToAadio, lang: "en"});
     const { startListening, stopListening, transcript, reset } = useVoiceToText({
@@ -90,8 +99,6 @@ function Exercise({textToAadio}: Props){
         ];
         let value = valueHitsWithPont / 10;
         let valueNo = valueHitsWithoutPont / 10;
-        console.log(value);
-        console.log(valueNo);
 
         setColorHitsWithPont(value > 0 ? colors[value-1] : colors[0])
         setColorHitsWithoutPont(valueNo > 0 ? colors[valueNo-1]: colors[0]);
@@ -142,43 +149,55 @@ function Exercise({textToAadio}: Props){
         return;
     }
 
-    const handleFinishExercise = () => {
-        //const avarge = averageRateVoiceExercise.reduce((accumulator, value) => accumulator + value, 0) / 3;
-        //const avargeTotal = (avarge + hitsWithPontuation + hitsWithoutPontuation) / 3;
+    const handleFinishExercise = async () => {
+        if(clicked) return
 
-        //const levels = ["easy", "moderate", "reasonable", "difficult", "very_difficult"];
-        //const index = Math.min(4, Math.floor((100 - avargeTotal) / 20));
+        setClicked(true);
+        const avarge = averageRateVoiceExercise.reduce((accumulator, value) => accumulator + value, 0) / 3;
+        const avargeTotal = (avarge + hitsWithPontuation + hitsWithoutPontuation) / 3;
+
+        const levels = ["easy", "moderate", "reasonable", "difficult", "very_difficult"];
+        const index = Math.min(4, Math.floor((100 - avargeTotal) / 20));
         
-        //const data = {"difficult": levels[index]}
-        //Create requeste to send data
-        
+        const data = {"difficult": levels[index]}
+
+        const request = await handleUpdateLevelExercise(exerciseId, data.difficult);
+        if (request === true){
+            setClicked(false);
+            toast.success("Progresso salvo com sucesso!", {position: 'top-right'})
+            haandleExercisesUpdate();
+        } else {
+            setClicked(false);
+            toast.error(`${request}`, {position: 'top-right'});
+        }
+
     }
 
     return (
-        <div className="container_exercises">
-            <div className="container_exerciser">
-                { exercisePronunciation &&
-                    <div className="header_result">
-                        {counterExercisePronuciation > 0 
-                            ? 
-                                <span>Você deve exercitar a pronúcia {counterExercisePronuciation} vezes</span>
-                            :
-                                <span>Parabéns, clique em finalizar para fazer o próximo exercício.</span>
-                        }
-                    </div>
-                }
-                
-                <div className="controls_audio">
-                    { speechStatus === "started"
-                        ?
-                            <div className="play_pause" onClick={stop}>
-                                <IoStopCircle size={34} />
-                            </div> 
+
+        <div className="container_exerciser">
+            { exercisePronunciation &&
+                <div className="header_result">
+                    {counterExercisePronuciation > 0 
+                        ? 
+                            <span>Você deve exercitar a pronúcia {counterExercisePronuciation} vezes</span>
                         :
-                            <div className="play_pause" onClick={start}>
-                                <HiSpeakerWave size={34} />
-                            </div>
+                            <span>Parabéns, clique em finalizar para fazer o próximo exercício.</span>
                     }
+                </div>
+            }
+                
+            <div className="controls_audio">
+                { speechStatus === "started"
+                    ?
+                        <div className="play_pause" onClick={stop}>
+                            <IoStopCircle size={34} />
+                        </div> 
+                    :
+                        <div className="play_pause" onClick={start}>
+                            <HiSpeakerWave size={34} />
+                        </div>
+                }
                 </div>
 
                 { exercisePronunciation &&
@@ -204,90 +223,98 @@ function Exercise({textToAadio}: Props){
                                     <div className="header_result">
                                         <span>Exercício finalizado</span>
                                     </div>
-                                    <Button
-                                        children="Finalizar"
-                                        onClick={handleFinishExercise}
-                                    />
+                                    <button className="finish_button_exercise" onClick={handleFinishExercise}>
+                                        Finalizar
+                                        {clicked && <CircularProgressIndicator />}
+                                    </button>
                                 </>
                             }
                         </div>
                         { averageRateVoiceExercise.length < 3 &&
                             <div className="header_pronuciation">
-                                {transcript}
-                            </div>
-                        }
-                        
-                        { transcript && averageRateVoiceExercise.length < 3 && 
-                            <div className="button_pronunciation">
-                                <Button
-                                    children="Exercitar novamente"
-                                    onClick={handleExerciseAgain}
-                                 />
-                            </div>
-                        }            
-                    </div>
-
-                }
-
-                { !exercisePronunciation &&
-                <div className="containser_answers">
-                    { !answered &&
-                        <TextInput 
-                            label='Sua resposta' 
-                            value={textAnswers}
-                            onChange={onChageTextAnswers}
-                            type='text'
-                            error={false}
-                            placeholder='Transcreva o que você ouvio no áudio...'
-                        />
+                            {transcript}
+                        </div>
                     }
                     
-                    { answered &&
-                        <>
-                            <div className='ansewrs'>
-                                <b>Texto correto:</b> <Text />
-                            </div>
-                            <div className='ansewrs'>
-                                <b>Sua resposta:</b> { textAnswers }
-                            </div>
-
-                            <div className="divider"></div>
-
-                            <div className="results">
-                            <div className="header_result">
-                                <span>Taxas de acerto</span>
-                            </div>
-                            <div className="datas_result">
-                                Considarando a pontuação:
-                                <span style={{color: colorHitsWithPont}}> { hitsWithPontuation }%</span>
-                            </div>
-                            <div className="datas_result">
-                                Desconsidarando a pontuação: 
-                                <span style={{color: colorHitsWithoutPont}}> { hitsWithoutPontuation }%</span> 
-                            </div>
-                            </div>
-                        </>
-                    }
-                    { answered 
-                        ?
-                        <div className="button_answers">
-                            <Button 
-                                children="Exercitar pronuncia"
-                                onClick={() => setExercisePronunciation(true)}
+                    { transcript && averageRateVoiceExercise.length < 3 && 
+                        <div className="button_pronunciation">
+                            <Button
+                                children="Exercitar novamente"
+                                onClick={handleExerciseAgain}
                              />
                         </div>
-                        :
-                        <div className="button_answers">
-                            <Button 
-                                children="Responder"
-                                onClick={toRespond}
-                             />
-                        </div>
-                    }
+                    }            
+                </div>
 
-                </div> 
+            }
+
+            { !exercisePronunciation &&
+            <div className="containser_answers">
+                { !answered &&
+                    <TextInput 
+                        label='Sua resposta' 
+                        value={textAnswers}
+                        onChange={onChageTextAnswers}
+                        type='text'
+                        lang='en-US'
+                        error={false}
+                        placeholder='Transcreva o que você ouvio no áudio...'
+                    />
                 }
-            </div>
+                    
+                { answered &&
+                    <>
+                        <div className='ansewrs'>
+                            <b>Texto correto:</b> <Text />
+                        </div>
+                        <div className='ansewrs'>
+                            <b>Sua resposta:</b> { textAnswers }
+                        </div>
+                        <div className="divider"></div>
+                        <div className='ansewrs'>
+                            <b>Texto em português:</b> { translation }
+                        </div>
+                        { observation &&
+                            <div className='ansewrs'>
+                                <b>Observações:</b> { observation }
+                            </div>
+                        }
+                        <div className="divider"></div>
+
+                        <div className="results">
+                        <div className="header_result">
+                            <span>Taxas de acerto</span>
+                        </div>
+                        <div className="datas_result">
+                            Considarando a pontuação:
+                            <span style={{color: colorHitsWithPont}}> { hitsWithPontuation }%</span>
+                        </div>
+                        <div className="datas_result">
+                            Desconsidarando a pontuação: 
+                            <span style={{color: colorHitsWithoutPont}}> { hitsWithoutPontuation }%</span> 
+                        </div>
+                        </div>
+                    </>
+                }
+                { answered 
+                    ?
+                    <div className="button_answers">
+                        <Button 
+                            children="Exercitar pronuncia"
+                            onClick={() => setExercisePronunciation(true)}
+                         />
+                    </div>
+                    :
+                    <div className="button_answers">
+                        <Button 
+                            children="Responder"
+                            onClick={toRespond}
+                         />
+                    </div>
+                }
+
+            </div> 
+            }
         </div>
     );
 }

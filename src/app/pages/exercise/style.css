@@ -1,15 +1,4 @@
 
-.container_exercises{
-    display: flex;
-    flex-direction: column;
-    width: 70%;
-    height: 70%;
-    align-items: center;
-    border: 1px solid #3232;
-    border-radius: 4px;
-    padding: 8px;
-}
-
 .container_exerciser{
     display: flex;
     flex-direction: column;
@@ -125,11 +114,25 @@
     margin-top: 15px;
 }
 
+.finish_button_exercise{
+    background-color: #473FCE;
+    width: 120px;
+    height: 38px;
+    border-radius: 4px;
+    color: #ffff;
+    outline: none;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .3s;
+    gap: 4px;
+    &:hover {
+        background-color: #4F46E5;
+    }
+}
+
 @media (max-width: 768px) {
     .header_home{
-        width: 90%;
-    }
-    .container_home{
         width: 90%;
     }
 }

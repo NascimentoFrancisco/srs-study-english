@@ -1,3 +1,4 @@
+import "./style.css";
 import { HashLoader } from "react-spinners";
 
 function Loading(){
