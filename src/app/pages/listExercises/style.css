@@ -10,6 +10,7 @@ main{
 .header_list_all_exercises{
     display: flex;
     flex-direction: row;
+    align-items: center;
     width: 70%;
     justify-content: space-between;
     margin-top: 35px;
@@ -45,6 +46,7 @@ main{
 .values_exercise{
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     width: 100%;
     color: #344055;
     gap: 2px;

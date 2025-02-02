@@ -10,6 +10,7 @@ import IsEmpty from "../../components/isEmpty";
 import { useAppDispatch } from "../../../redux/hooks";
 import { setExerciseUse } from "../../../redux/slice/exerciseSlice";
 import ModalConfirmation from "../../components/modalConfirmation";
+import Button from "../../components/Button";
 
 
 function ListExercises() {
@@ -33,7 +34,6 @@ function ListExercises() {
             const request = await handleGetAllExercisesByUser();
             if(Array.isArray(request) && request.every(isExerciseResponse)){
                 setAllExercises(request);
-                console.log(allExercises);
                 setLoadingRequest(false);
                 setListExerciseUpdate(true);
             } else {
@@ -76,7 +76,6 @@ function ListExercises() {
         if(clickeModal) return
         setClickeModal(true);
 
-        //console.log(exerciseIdDel)
         const request = await handldeleteExercise(exerciseIdDel);
         if(request === true){
             toast.success("Exercício excluído com sucesso!", {position: 'top-right'});
@@ -102,11 +101,13 @@ function ListExercises() {
                 text="Você realmente deseja excluir o exercício selecionado."
                 show={showModal}
                 cliked={clickeModal}
+                position='absolute'
                 handleShow={handleClosedModal}
                 action={handleDeleteExercise}
             />
             <div className="header_list_all_exercises">
                 <h4>Todos os exercícos do usuário</h4>
+                <Button children="Exercícios pendnetes" onClick={()=> navigate("/")}/>
             </div>
 
             {loadingRequest &&
@@ -121,16 +122,13 @@ function ListExercises() {
                         {allExercises.map((exercise, index) => (
                             <div className="exercise_of_list" key={index}>
                                 <div className="values_exercise">
-                                    <b>Texto em inglês:</b>
-                                    <p>{exercise.text}</p>
+                                    <p><b>Texto em inglês: </b> {exercise.text}</p>
                                 </div>
                                 <div className="values_exercise">
-                                    <b>Texto em português:</b>
-                                    <p>{exercise.translation}</p>
+                                    <p><b>Texto em português: </b>{exercise.translation}</p>
                                 </div>
                                 <div className="values_exercise">
-                                    <b>Observações:</b>
-                                    <p>{exercise.observation ? exercise.observation : "Sem observações"}</p>
+                                    <p><b>Observações: </b>{exercise.observation ? exercise.observation : "Sem observações"}</p>
                                 </div>
                                 <div className="actions_of_exercise_of_list">
                                     <div 

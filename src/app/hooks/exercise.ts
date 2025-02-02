@@ -1,8 +1,19 @@
 import { createExercise, getPendingExercises, getAllExercisesByUser, updateExercise , updateLevelExercise, deleteExercise} from "../services/exercisesRequests";
 import { RequestExercise, RequestUpdateExercise } from "../@types/exercise/exerciseRequest";
+import { useAppDispatch } from "../../redux/hooks";
+import { setAuthStatus, setAuthToken, setUser} from "../../redux/slice/authSlice";
 
 
 export const exerciseHooks = () => {
+
+    const dispatch = useAppDispatch();
+    
+    const handleNotAuthenticated = () => {
+        dispatch(setAuthStatus('not_authenticated'));
+        dispatch(setAuthToken(null));
+        dispatch(setUser(null));
+        localStorage.removeItem(import.meta.env.VITE_ACCESS_TOKEN);
+    }
 
     const handleCreateExercise = async (
         text: string, translation: string,
@@ -22,9 +33,13 @@ export const exerciseHooks = () => {
 
         const request = await createExercise(exerciseRequest);
         if (request.data){
-            console.log(request.data);
             return true;
         }
+
+        if(request.status && request.status === 401){
+            handleNotAuthenticated();
+        }
+
         return request.messages
     }
 
@@ -32,9 +47,13 @@ export const exerciseHooks = () => {
 
         const request = await getPendingExercises();
         if (request.data){
-            //console.log(request.data);
             return request.data;
         }
+
+        if(request.status && request.status === 401){
+            handleNotAuthenticated();
+        }
+
         return request.messages
     }
 
@@ -42,9 +61,13 @@ export const exerciseHooks = () => {
 
         const request = await getAllExercisesByUser();
         if (request.data){
-            //console.log(request.data);
             return request.data;
         }
+
+        if(request.status && request.status === 401){
+            handleNotAuthenticated();
+        }
+    
         return request.messages
     }
 
@@ -62,6 +85,11 @@ export const exerciseHooks = () => {
             console.log(request.data);
             return true;
         }
+
+        if(request.status && request.status === 401){
+            handleNotAuthenticated();
+        }
+
         return request.messages
 
     }
@@ -71,6 +99,11 @@ export const exerciseHooks = () => {
         if (request.data){
             return true;
         }
+
+        if(request.status && request.status === 401){
+            handleNotAuthenticated();
+        }
+
         return request.messages
     }
 
@@ -79,6 +112,11 @@ export const exerciseHooks = () => {
         if (request.data){
             return true;
         }
+
+        if(request.status && request.status === 401){
+            handleNotAuthenticated();
+        }
+        
         return request.messages
     }
 

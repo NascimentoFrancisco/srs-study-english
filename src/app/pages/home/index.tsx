@@ -25,7 +25,7 @@ function Home(){
             const request = await handleGetPendingExercises();
             if(Array.isArray(request) && request.every(isExerciseResponse)){
                 setExercises(request);
-                console.log(exercises);
+
                 SetLoadingRequest(false);
                 setUpdatedExercises(true);
             } else {
@@ -93,6 +93,8 @@ function Home(){
                                     <Exercise 
                                         textToAadio={exercise.text} 
                                         exerciseId={exercise.id}
+                                        translation={exercise.translation}
+                                        observation={exercise.observation && exercise.observation}
                                         haandleExercisesUpdate={handleExercisesUpdate} 
                                         key={index}
                                     />

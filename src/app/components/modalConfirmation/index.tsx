@@ -8,14 +8,15 @@ type Props = {
     title: string,
     text: string,
     cliked: boolean,
+    position: 'fixed' | 'absolute'
     action: () => void,
     handleShow: () => void,
 }
 
-function ModalConfirmation({show, title, text, cliked, action, handleShow}: Props) {
+function ModalConfirmation({show, title, text, cliked, position, action, handleShow}: Props) {
     
     return (
-        <div className="modal" style={{ display: show ? 'flex' : 'none'}}>
+        <div className="modal" style={{ display: show ? 'flex' : 'none', position}}>
             <div className="container_modal">
                 <div className="icon_modal">
                     <GoAlertFill size={34}/>

@@ -4,16 +4,18 @@ import { FiMenu } from "react-icons/fi";
 import { useAppSelector } from "../../../redux/hooks";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/auth";
+import ModalConfirmation from "../../components/modalConfirmation";
 
 function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     const auth = useAppSelector(state => state.auth);
     const { handleLogout } = useAuth();
     
     const navigate = useNavigate();
 
     const handleNavigateToLogin = () => {
-        console.log("Clique")
+
         if(auth.authStatus === 'authenticated'){
             console.log(auth.authStatus);
             handleLogout();
@@ -22,6 +24,7 @@ function Header() {
             console.log(auth.authStatus);
             navigate("/login");
         }
+        setShowModal(false);
     }
 
     const handleNavigateAccount = () => {
@@ -35,7 +38,7 @@ function Header() {
     }
 
     useEffect(() => {
-        console.log(auth.authStatus);
+
         const menu = document.getElementById("menu_mobile");
         if (menu) {
             if (menuOpen) {
@@ -57,6 +60,15 @@ function Header() {
 
     return (
         <>
+        <ModalConfirmation 
+            title="Confirmação de logout"
+            text="Você realmente deseja sair do sistema agora?"
+            show={showModal}
+            cliked={false}
+            position = 'fixed'
+            handleShow={ () => setShowModal(false)}
+            action={handleNavigateToLogin}
+        />
         <div id="menu_mobile">
             <div className="menu-mobile-logo">
                 <img src="./new_logo.png" alt="logo"/>
@@ -65,7 +77,7 @@ function Header() {
             ?   
                 <>
                     <a href="#">Minha conta</a>
-                    <a onClick={handleNavigateToLogin}>Sair</a>
+                    <a onClick={ () => setShowModal(true)}>Sair</a>
                     <a href="#">Sobre</a>
                 </>
             :
@@ -88,7 +100,7 @@ function Header() {
                 ?   
                     <>
                         <a onClick={handleNavigateAccount}>Minha conta</a>
-                        <a onClick={handleNavigateToLogin}>Sair</a>
+                        <a onClick={() => setShowModal(true)}>Sair</a>
                         <a href="#">Sobre</a>
                     </>
                 :

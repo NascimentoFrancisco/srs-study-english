@@ -1,8 +1,8 @@
-import { ChangePassword, Login } from "../@types/user/auth";
+import { ChangePassword, LoginResponse } from "../@types/user/auth";
 import { api } from "./api"
 
 export const login = async (email: string, password: string) => {
-    return await api<Login>({
+    return await api<LoginResponse>({
         endpoint: "/auth/", method: 'POST', data: {email, password}, withAuth: false
     });
 }

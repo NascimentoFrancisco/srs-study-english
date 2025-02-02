@@ -123,6 +123,7 @@ function Exircises({type}: Props){
                     value={textInput}
                     onChange={handleTextChange}
                     type="text"
+                    lang='en-US'
                     placeholder="Texto em inglês..."
                     error={textError}
                     errorMessage={textError ? "Este campo é obrigatório" : ""}

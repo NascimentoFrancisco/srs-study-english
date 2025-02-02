@@ -13,6 +13,7 @@ type Props = {
 export const api = async <TypeResponse>({
     endpoint, method = 'GET', data, parms, withAuth = true
 }: Props) => {
+    
     const instace = axios.create({
         baseURL: import.meta.env.VITE_API_BASE_URL
     });
@@ -40,11 +41,10 @@ export const api = async <TypeResponse>({
         }
     } catch (error){
         const err = error as AxiosError;
-        //console.log(err)
-        //console.log(er.response?.data);
         if (err.status === 401){
             return {
                 error: true,
+                status: 401,
                 messages: ["Não autorizado"]
             }
         }

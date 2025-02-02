@@ -14,10 +14,12 @@ import CircularProgressIndicator from '../../components/circularProgressIndicato
 type Props = {
     textToAadio: string,
     exerciseId: string,
+    translation: string,
+    observation?: string,
     haandleExercisesUpdate: () => void,
 }
 
-function Exercise({textToAadio, exerciseId, haandleExercisesUpdate }: Props){
+function Exercise({textToAadio, exerciseId, translation, observation, haandleExercisesUpdate }: Props){
     const [textAnswers, setTextAnswers] = useState("");
     const [answered, setAnswered] = useState(false);
     const [hitsWithPontuation, setHitsWithPontuation] = useState(0);
@@ -97,8 +99,6 @@ function Exercise({textToAadio, exerciseId, haandleExercisesUpdate }: Props){
         ];
         let value = valueHitsWithPont / 10;
         let valueNo = valueHitsWithoutPont / 10;
-        console.log(value);
-        console.log(valueNo);
 
         setColorHitsWithPont(value > 0 ? colors[value-1] : colors[0])
         setColorHitsWithoutPont(valueNo > 0 ? colors[valueNo-1]: colors[0]);
@@ -256,6 +256,7 @@ function Exercise({textToAadio, exerciseId, haandleExercisesUpdate }: Props){
                         value={textAnswers}
                         onChange={onChageTextAnswers}
                         type='text'
+                        lang='en-US'
                         error={false}
                         placeholder='Transcreva o que você ouvio no áudio...'
                     />
@@ -269,6 +270,15 @@ function Exercise({textToAadio, exerciseId, haandleExercisesUpdate }: Props){
                         <div className='ansewrs'>
                             <b>Sua resposta:</b> { textAnswers }
                         </div>
+                        <div className="divider"></div>
+                        <div className='ansewrs'>
+                            <b>Texto em português:</b> { translation }
+                        </div>
+                        { observation &&
+                            <div className='ansewrs'>
+                                <b>Observações:</b> { observation }
+                            </div>
+                        }
                         <div className="divider"></div>
 
                         <div className="results">

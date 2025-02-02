@@ -23,7 +23,7 @@ export const useAuth = () => {
         const request = await login(email, password);
 
         if(request.data){
-            const { data } = request
+            const { data } = request 
             authenticate(data.accessToken);
             return true;
         }
@@ -35,6 +35,10 @@ export const useAuth = () => {
     const handleAuthenticateUser = async() => {
         const authToken = handleGetToken();
         const request = await getUser();
+
+        if (request.status && request.status === 401){
+            handleLogout();
+        }
 
         if (!authToken || !request.data){
             dispatch(setAuthStatus('not_authenticated'));
@@ -50,6 +54,11 @@ export const useAuth = () => {
         if(request.data){
             return true;
         }
+
+        if (request.status && request.status === 401){
+            handleLogout();
+        }
+        
         return request.messages;
     }
 
