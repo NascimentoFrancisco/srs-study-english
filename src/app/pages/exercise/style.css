@@ -10,6 +10,32 @@
     padding: 8px;
 }
 
+.container_input_speed_audio{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    gap: 1px;
+}
+
+.container_input_speed_audio select{
+    width: auto;
+    background-color: #F8FAFC;
+    color: #5B6776;
+    border: 1px solid #4F46E573;
+    outline: none;
+    box-sizing: border-box;
+    transition: all .3s; 
+    border-radius: 4px;
+    
+    &:hover{
+        background-color: #F8FAFC;
+    }
+
+    &:focus{
+        border-color: #4F46E5;
+    }
+}
+
 .controls_audio{
     display: flex;
     margin-top: 10px;

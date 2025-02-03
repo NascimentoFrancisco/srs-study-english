@@ -22,6 +22,7 @@ type Props = {
 function Exercise({textToAadio, exerciseId, translation, observation, haandleExercisesUpdate }: Props){
     const [textAnswers, setTextAnswers] = useState("");
     const [answered, setAnswered] = useState(false);
+    const [audioSpeed, setAudioSpeed] = useState(1);
     const [hitsWithPontuation, setHitsWithPontuation] = useState(0);
     const [hitsWithoutPontuation, setHitsWithoutPontuation] = useState(0);
     const [colorHitsWithPont, setColorHitsWithPont] = useState("#344055");
@@ -34,11 +35,15 @@ function Exercise({textToAadio, exerciseId, translation, observation, haandleExe
     const [averageRateVoiceExercise, SetAverageRateVoiceExercise] = useState(Array<number>);
     const { handleUpdateLevelExercise } = exerciseHooks();
 
-    const { Text, speechStatus, start, stop, } = useSpeech({text: textToAadio, lang: "en"});
+    const { Text, speechStatus, start, stop, } = useSpeech({text: textToAadio, lang: "en", rate: audioSpeed});
     const { startListening, stopListening, transcript, reset } = useVoiceToText({
         continuous: true,
         lang: "en-US",
     });
+
+    const handleChangeAudioSpeed = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setAudioSpeed(parseFloat(event.target.value));
+    };
 
     const toRespond = () => {
         if (textAnswers && !answered){
@@ -186,7 +191,16 @@ function Exercise({textToAadio, exerciseId, translation, observation, haandleExe
                     }
                 </div>
             }
-                
+            <div className="container_input_speed_audio">
+                <label htmlFor="speed">Velocidade do áudio:</label>
+                <select name="speed" id="speed" value={audioSpeed} onChange={handleChangeAudioSpeed}>
+                    <option value="1">Normal</option>
+                    <option value="0.85">Intermediário</option>
+                    <option value="0.75">Um pouco lento</option>
+                    <option value="0.65">Lento</option>
+                    <option value="0.5">Muito lento</option>
+                </select>
+            </div>
             <div className="controls_audio">
                 { speechStatus === "started"
                     ?

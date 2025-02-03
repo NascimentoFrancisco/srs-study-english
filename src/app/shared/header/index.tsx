@@ -71,7 +71,7 @@ function Header() {
         />
         <div id="menu_mobile">
             <div className="menu-mobile-logo">
-                <img src="./new_logo.png" alt="logo"/>
+                <img src="./logo.png" alt="logo"/>
             </div>
             { auth.authStatus === 'authenticated' 
             ?   
@@ -92,7 +92,7 @@ function Header() {
         
         <header>
             <div className="header-logo">
-                <img src="./new_logo.png" alt="logo" />
+                <img src="./logo.png" alt="logo" />
             </div>
 
             <div className="header-options">
