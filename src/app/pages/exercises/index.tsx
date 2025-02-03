@@ -140,11 +140,11 @@ function Exircises({type}: Props){
                 />
 
                 <TextInput
-                    label="Observaçõs:"
+                    label="Observações:"
                     value={observationInput}
                     onChange={handleObservationChange}
                     type="text"
-                    placeholder="Oservações, caso tenha alguma..."
+                    placeholder="Observações, caso tenha alguma..."
                     error={false}
                 />
 

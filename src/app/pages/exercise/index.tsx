@@ -272,7 +272,7 @@ function Exercise({textToAadio, exerciseId, translation, observation, haandleExe
                         type='text'
                         lang='en-US'
                         error={false}
-                        placeholder='Transcreva o que você ouvio no áudio...'
+                        placeholder='Transcreva o que você ouve no áudio...'
                     />
                 }
                     
@@ -300,11 +300,11 @@ function Exercise({textToAadio, exerciseId, translation, observation, haandleExe
                             <span>Taxas de acerto</span>
                         </div>
                         <div className="datas_result">
-                            Considarando a pontuação:
+                            Considerando a pontuação:
                             <span style={{color: colorHitsWithPont}}> { hitsWithPontuation }%</span>
                         </div>
                         <div className="datas_result">
-                            Desconsidarando a pontuação: 
+                            Desconsiderando a pontuação: 
                             <span style={{color: colorHitsWithoutPont}}> { hitsWithoutPontuation }%</span> 
                         </div>
                         </div>

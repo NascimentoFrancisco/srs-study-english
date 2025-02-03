@@ -56,7 +56,7 @@ function AuthForm(){
         <div className="container">
             <div className="header_auth">
                 <h4>Dados do usuário</h4>
-                <span>Edite seus dados abaixo, se preciso</span>
+                <span>Edite suas informações abaixo</span>
             </div>
             <TextInput 
                 label="Nome:"
