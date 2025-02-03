@@ -6,6 +6,7 @@ import { AuthMiddleware } from "../middlewares/authMiddleware";
 import Users from "../pages/user";
 import ListExercises from "../pages/listExercises";
 import NotFound from "../pages/notFound";
+import About from "../pages/about";
 
 function MainRouters() {
     const routers = useRoutes([
@@ -41,6 +42,10 @@ function MainRouters() {
         {
             path: '/exercises-edit',
             element: <AuthMiddleware><Exercises type="edit" /> </AuthMiddleware>
+        },
+        {
+            path: '/about',
+            element: <About />
         },
         {
             path:"*",

@@ -78,13 +78,13 @@ function Header() {
                 <>
                     <a href="#">Minha conta</a>
                     <a onClick={ () => setShowModal(true)}>Sair</a>
-                    <a href="#">Sobre</a>
+                    <a onClick={() => navigate("/about")}>Sobre</a>
                 </>
             :
                 <>
                     <a href="#">Cria conta</a>
                     <a onClick={handleNavigateToLogin}>Entrar</a>
-                    <a href="#">Sobre</a>
+                    <a onClick={() => navigate("/about")}>Sobre</a>
                 </>
             }
             <a href="#" id="closedMenu" onClick={() => setMenuOpen(false)}>X</a>
@@ -101,13 +101,13 @@ function Header() {
                     <>
                         <a onClick={handleNavigateAccount}>Minha conta</a>
                         <a onClick={() => setShowModal(true)}>Sair</a>
-                        <a href="#">Sobre</a>
+                        <a onClick={() => navigate("/about")}>Sobre</a>
                     </>
                 :
                     <>
                         <a onClick={handleNavigateAccount}>Cria conta</a>
                         <a onClick={handleNavigateToLogin}>Entrar</a>
-                        <a href="#">Sobre</a>
+                        <a onClick={() => navigate("/about")}>Sobre</a>
                     </>
                 }
             </div>
