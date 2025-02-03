@@ -109,7 +109,7 @@ function Auth({type}: Props) {
         <div className="container">
           
           <div className="header_auth">
-            <h4> {type === 'login' ? "Enter na sua conta" : "Crie sua conta"}</h4>
+            <h4> {type === 'login' ? "Entrar na meinha conta" : "Criar sua conta"}</h4>
             <span>Insira as informações necessárias</span>
           </div>
           
@@ -164,8 +164,8 @@ function Auth({type}: Props) {
 
           <div className='footer_auth'>
             { type === 'create' 
-              ? <Link to="/login">Se já possui conta, clique aqui para entrar</Link>
-              : <Link to="/create">Não possui conta? Clique aqui para crair uma</Link>
+              ? <Link to="/login">Se já possui conta, clique aqui para entrar.</Link>
+              : <Link to="/create">Não possui conta? Clique aqui para crair uma.</Link>
             }
 
           </div>

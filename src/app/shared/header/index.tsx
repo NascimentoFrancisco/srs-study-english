@@ -71,20 +71,20 @@ function Header() {
         />
         <div id="menu_mobile">
             <div className="menu-mobile-logo">
-                <img src="./new_logo.png" alt="logo"/>
+                <img src="./logo.png" alt="logo"/>
             </div>
             { auth.authStatus === 'authenticated' 
             ?   
                 <>
                     <a href="#">Minha conta</a>
                     <a onClick={ () => setShowModal(true)}>Sair</a>
-                    <a href="#">Sobre</a>
+                    <a onClick={() => navigate("/about")}>Sobre</a>
                 </>
             :
                 <>
                     <a href="#">Cria conta</a>
                     <a onClick={handleNavigateToLogin}>Entrar</a>
-                    <a href="#">Sobre</a>
+                    <a onClick={() => navigate("/about")}>Sobre</a>
                 </>
             }
             <a href="#" id="closedMenu" onClick={() => setMenuOpen(false)}>X</a>
@@ -92,7 +92,7 @@ function Header() {
         
         <header>
             <div className="header-logo">
-                <img src="./new_logo.png" alt="logo" />
+                <img src="./logo.png" alt="logo" />
             </div>
 
             <div className="header-options">
@@ -101,13 +101,13 @@ function Header() {
                     <>
                         <a onClick={handleNavigateAccount}>Minha conta</a>
                         <a onClick={() => setShowModal(true)}>Sair</a>
-                        <a href="#">Sobre</a>
+                        <a onClick={() => navigate("/about")}>Sobre</a>
                     </>
                 :
                     <>
                         <a onClick={handleNavigateAccount}>Cria conta</a>
                         <a onClick={handleNavigateToLogin}>Entrar</a>
-                        <a href="#">Sobre</a>
+                        <a onClick={() => navigate("/about")}>Sobre</a>
                     </>
                 }
             </div>
