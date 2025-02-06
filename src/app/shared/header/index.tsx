@@ -91,7 +91,7 @@ function Header() {
         </div>
         
         <header>
-            <div className="header-logo">
+            <div className="header-logo" onClick={() => navigate("/")}>
                 <img src="./logo.png" alt="logo" />
             </div>
 

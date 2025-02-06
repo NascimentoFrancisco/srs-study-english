@@ -78,7 +78,7 @@ function Exircises({type}: Props){
         } else {
             if(exerciseUseState){
                 const request = await handleUpdateExercise(
-                    exerciseUseState?.id, textInput, translationInput, observationInput
+                    exerciseUseState?._id, textInput, translationInput, observationInput
                 );
                 if(request === true){
                     setClicked(false);

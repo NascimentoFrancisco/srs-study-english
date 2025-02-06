@@ -50,7 +50,7 @@ function ListExercises() {
         return (
             typeof item === "object" &&
             item !== null &&
-            "id" in item &&
+            "_id" in item &&
             "text" in item 
         );
     }
@@ -141,7 +141,7 @@ function ListExercises() {
                                     </div>
                                     <div 
                                         className='action_exercise_container' onMouseEnter={() => setShowTooltip(true)}
-                                        onMouseLeave={() => setShowTooltip(false)} onClick={() => handleShowModal(exercise.id)}
+                                        onMouseLeave={() => setShowTooltip(false)} onClick={() => handleShowModal(exercise._id)}
                                     >
                                         <MdDeleteForever size={30} className="action_exercise_icon" />
                                         {showTooltip && <span className="action_tooltip">Excluir exercício</span>}
