@@ -42,7 +42,7 @@ function Home(){
         return (
             typeof item === "object" &&
             item !== null &&
-            "id" in item &&
+            "_id" in item &&
             "text" in item 
         );
     }
@@ -92,7 +92,7 @@ function Home(){
                             {exercises.map((exercise, index) => (
                                     <Exercise 
                                         textToAadio={exercise.text} 
-                                        exerciseId={exercise.id}
+                                        exerciseId={exercise._id}
                                         translation={exercise.translation}
                                         observation={exercise.observation && exercise.observation}
                                         haandleExercisesUpdate={handleExercisesUpdate} 

@@ -1,7 +1,10 @@
 
 import { useAppDispatch } from "../../redux/hooks";
 import { setAuthStatus, setAuthToken, setUser} from "../../redux/slice/authSlice";
-import { create, getUser, updateUser } from "../services/userRequests";
+import { ApiErrorResponse } from "../@types/errors/errorResponse";
+import { ApiSuccessResponse } from "../@types/response/apiResponse";
+import { User } from "../@types/user/user";
+import { create, getUser, updateUser, deleteUser } from "../services/userRequests";
 
 
 export const useHook = () => {
@@ -17,43 +20,62 @@ export const useHook = () => {
 
     const handleCreateUser = async (name: string, email: string, password: string) =>{
         const request = await create(name, email, password);
-        if (request.data){
+        if (request.status === 201){
             return true;
         }
-
-        return request.messages
+        let response = request as ApiErrorResponse
+        return response.detail
     }
 
     const handleGetUser = async () => {
         const request = await getUser();
-        if (request.data){
-            dispatch(setUser(request.data));
+        if (request.status === 200){
+            let data = request as ApiSuccessResponse
+            dispatch(setUser(data.data as User));
             return true;
         }
 
-        if (request.status && request.status === 401){
+        if (request.status === 401){
             handleNotAuthenticated();
         }
 
-        return request.messages;
+        const response = request as ApiErrorResponse
+        return response.detail
     }
 
     const handleUpdateUser = async (name: string, email: string) => {
         const request = await updateUser(name, email);
-        if (request.data){
+        if (request.status === 200){
             return true;
         }
 
-        if (request.status && request.status === 401){
+        if (request.status === 401){
             handleNotAuthenticated();
         }
 
-        return request.messages;
+        const response = request as ApiErrorResponse
+        return response.detail
+    }
+
+    const handleDeleteUser = async () => {
+        const request = await deleteUser();
+        if (request.status === 204){
+            handleNotAuthenticated()
+            return true;
+        }
+
+        if (request.status === 401){
+            handleNotAuthenticated();
+        }
+
+        const response = request as ApiErrorResponse
+        return response.detail
     }
 
     return {
         handleGetUser,
         handleCreateUser,
-        handleUpdateUser
+        handleUpdateUser,
+        handleDeleteUser
     }
 }

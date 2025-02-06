@@ -1,6 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import "./style.css";
 
 function About(){
+
+    const navigate = useNavigate();
+    
     return (
         <main className="main_about">
             <h2>MemorizeEnglish</h2>
@@ -18,12 +22,12 @@ function About(){
             </div>
 
             <div className="finish_about">
-                <div className="logo_about">
+                <div className="logo_about" onClick={() => navigate("/")}>
                     <img src="./logo_black.png" alt="logo" />
                 </div>
                 <div className="dev_app">
                     <small>@Copyright 2025 - 2025 Francisco-ADS</small>
-                    <span><b>Desevolvido por:</b> <a href="https://www.linkedin.com/in/francisco-leite-nascimento/">Francisco Leite</a></span>
+                    <span><b>Desevolvido por:</b> <a href="https://www.linkedin.com/in/francisco-leite-nascimento/" target="_blank" >Francisco Leite</a></span>
                 </div>
             </div>
         </main>

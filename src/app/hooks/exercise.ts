@@ -2,6 +2,9 @@ import { createExercise, getPendingExercises, getAllExercisesByUser, updateExerc
 import { RequestExercise, RequestUpdateExercise } from "../@types/exercise/exerciseRequest";
 import { useAppDispatch } from "../../redux/hooks";
 import { setAuthStatus, setAuthToken, setUser} from "../../redux/slice/authSlice";
+import { ApiErrorResponse } from "../@types/errors/errorResponse";
+import { ApiSuccessResponse } from "../@types/response/apiResponse";
+import { ExerciseResponse } from "../@types/exercise/exercise";
 
 
 export const exerciseHooks = () => {
@@ -19,56 +22,56 @@ export const exerciseHooks = () => {
         text: string, translation: string,
         audio_url: string, observation: string
     ) => {
-        const now = new Date();
-        const dateOnly = now.toISOString().split("T")[0]
-
         const exerciseRequest: RequestExercise = {
             text: text,
             translation: translation,
-            difficulty: "very_difficult",
             audio_url: audio_url,
-            review_date: dateOnly,
             observation: observation
         }
 
         const request = await createExercise(exerciseRequest);
-        if (request.data){
+        if (request.status === 201){
             return true;
         }
 
-        if(request.status && request.status === 401){
+        if(request.status === 401){
             handleNotAuthenticated();
         }
 
-        return request.messages
+        const response = request as ApiErrorResponse;
+        return response.detail;
     }
 
     const handleGetPendingExercises = async () => {
 
         const request = await getPendingExercises();
-        if (request.data){
-            return request.data;
+        if (request.status === 200){
+            let response = request as ApiSuccessResponse
+            return response.data as Array<ExerciseResponse>;
         }
 
-        if(request.status && request.status === 401){
+        if(request.status === 401){
             handleNotAuthenticated();
         }
 
-        return request.messages
+        const response = request as ApiErrorResponse;
+        return response.detail;
     }
 
     const handleGetAllExercisesByUser = async () => {
 
         const request = await getAllExercisesByUser();
-        if (request.data){
-            return request.data;
+        if (request.status === 200){
+            let data = request as ApiSuccessResponse
+            return data.data as Array<ExerciseResponse>;
         }
 
         if(request.status && request.status === 401){
             handleNotAuthenticated();
         }
     
-        return request.messages
+        const response = request as ApiErrorResponse;
+        return response.detail;
     }
 
     const handleUpdateExercise = async (
@@ -81,43 +84,45 @@ export const exerciseHooks = () => {
         }
 
         const request = await updateExercise(exerciseId, requestUpdateExercise);
-        if (request.data){
-            console.log(request.data);
+        if (request.status === 200){
             return true;
         }
 
-        if(request.status && request.status === 401){
+        if(request.status === 401){
             handleNotAuthenticated();
         }
 
-        return request.messages
+        const response = request as ApiErrorResponse;
+        return response.detail;
 
     }
 
     const handleUpdateLevelExercise = async (exerciseId: string, difficulty: string) => {
         const request = await updateLevelExercise(exerciseId, difficulty);
-        if (request.data){
+        if (request.status === 200){
             return true;
         }
 
-        if(request.status && request.status === 401){
+        if(request.status === 401){
             handleNotAuthenticated();
         }
 
-        return request.messages
+        const response = request as ApiErrorResponse;
+        return response.detail;
     }
 
     const handldeleteExercise = async (exerciseId: string) => {
         const request = await deleteExercise(exerciseId);
-        if (request.data){
+        if (request.status === 204){
             return true;
         }
 
-        if(request.status && request.status === 401){
+        if(request.status === 401){
             handleNotAuthenticated();
         }
         
-        return request.messages
+        const response = request as ApiErrorResponse;
+        return response.detail;
     }
 
     return {

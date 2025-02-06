@@ -1,5 +1,9 @@
 import { useAppDispatch } from "../../redux/hooks";
 import { setAuthStatus, setAuthToken, setUser} from "../../redux/slice/authSlice";
+import { ApiErrorResponse } from "../@types/errors/errorResponse";
+import { ApiSuccessResponse } from "../@types/response/apiResponse";
+import { ChangePassword, LoginResponse } from "../@types/user/auth";
+import { User } from "../@types/user/user";
 import { login, changePassword } from "../services/authRequests";
 import { getUser } from "../services/userRequests";
 
@@ -21,45 +25,72 @@ export const useAuth = () => {
     // Function to login
     const handleLogin = async (email: string, password: string) => {
         const request = await login(email, password);
+        console.log(request)
 
-        if(request.data){
-            const { data } = request 
-            authenticate(data.accessToken);
+        if(request.status === 200){
+            const data = request as ApiSuccessResponse
+            const login_response = data.data as LoginResponse
+            authenticate(login_response.accessToken);
             return true;
+
+        } else if(request.status === 401){
+            const response = request as ApiErrorResponse
+            dispatch(setAuthStatus('not_authenticated'));
+            return response.detail;
+
+        } else if (request.status === 500){
+            const response = request as ApiErrorResponse
+            dispatch(setAuthStatus('not_authenticated'));
+            return response.detail;
         }
 
-        dispatch(setAuthStatus('not_authenticated'));
-        return request.messages
+        return ["Ocorreu um erro inesperado."]
+        
     }
 
     const handleAuthenticateUser = async() => {
         const authToken = handleGetToken();
+        
+        if(!authToken){
+            handleLogout();
+            return;
+        }
+    
         const request = await getUser();
 
-        if (request.status && request.status === 401){
+        if (request.status === 401){
             handleLogout();
+            return;
         }
 
-        if (!authToken || !request.data){
+        if (request.status === 401){
             dispatch(setAuthStatus('not_authenticated'));
             dispatch(setAuthToken(null));
             return;
         }
-        dispatch(setUser(request.data));
-        authenticate(authToken);
+
+        if (request.status === 200 && authToken){
+            let response = request as ApiSuccessResponse;
+            dispatch(setUser(response.data as User));
+            authenticate(authToken);
+        }
     }
 
     const handleChangePassword = async (password1: string, password2: string) => {
         const request = await changePassword(password1, password2);
-        if(request.data){
+        if(request.status === 200){
             return true;
         }
 
-        if (request.status && request.status === 401){
+        if (request.status === 401){
             handleLogout();
         }
         
-        return request.messages;
+        if (request.status === 400){
+            let response = request as ApiErrorResponse;
+            const data = response as ChangePassword
+            return data.detail
+        }
     }
 
     const handleLogout = () => {
