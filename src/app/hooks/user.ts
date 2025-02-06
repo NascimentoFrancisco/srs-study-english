@@ -4,7 +4,7 @@ import { setAuthStatus, setAuthToken, setUser} from "../../redux/slice/authSlice
 import { ApiErrorResponse } from "../@types/errors/errorResponse";
 import { ApiSuccessResponse } from "../@types/response/apiResponse";
 import { User } from "../@types/user/user";
-import { create, getUser, updateUser } from "../services/userRequests";
+import { create, getUser, updateUser, deleteUser } from "../services/userRequests";
 
 
 export const useHook = () => {
@@ -57,9 +57,25 @@ export const useHook = () => {
         return response.detail
     }
 
+    const handleDeleteUser = async () => {
+        const request = await deleteUser();
+        if (request.status === 204){
+            handleNotAuthenticated()
+            return true;
+        }
+
+        if (request.status === 401){
+            handleNotAuthenticated();
+        }
+
+        const response = request as ApiErrorResponse
+        return response.detail
+    }
+
     return {
         handleGetUser,
         handleCreateUser,
-        handleUpdateUser
+        handleUpdateUser,
+        handleDeleteUser
     }
 }

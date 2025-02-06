@@ -17,3 +17,9 @@ export const updateUser = async (name: string, email: string) => {
         endpoint: "/user/", method: 'PUT', withAuth: true, data: {name, email}
     });
 }
+
+export const deleteUser = async () => {
+    return await api({
+        endpoint: "/user/", method: 'DELETE', withAuth: true
+    });
+}

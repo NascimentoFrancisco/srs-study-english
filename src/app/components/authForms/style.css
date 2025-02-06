@@ -27,6 +27,28 @@
     margin-bottom: 30px;
 }
 
+.delete_user{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.btn_delete_user{
+    background-color: #ce3f3f;
+    width: 100px;
+    height: 38px;
+    border-radius: 4px;
+    color: #ffff;
+    outline: none;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .3s;
+    &:hover {
+        background-color: #d42222;
+    }
+}
+
 @media (max-width: 768px) {
     .container{
         width: 90%;
