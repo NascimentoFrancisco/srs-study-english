@@ -46,6 +46,8 @@ export const useHook = () => {
     const handleUpdateUser = async (name: string, email: string) => {
         const request = await updateUser(name, email);
         if (request.status === 200){
+            let data = request as ApiSuccessResponse;
+            dispatch(setUser(data.data as User));
             return true;
         }
 

@@ -6,11 +6,14 @@ import { ChangePassword, LoginResponse } from "../@types/user/auth";
 import { User } from "../@types/user/user";
 import { login, changePassword } from "../services/authRequests";
 import { getUser } from "../services/userRequests";
+import { useHook } from "./user";
+
 
 const LOCAL_SOTORAGE_ACCESS_TOKEN = import.meta.env.VITE_ACCESS_TOKEN;
 
 export const useAuth = () => {
     const dispatch = useAppDispatch();
+    const { handleGetUser } = useHook();
 
     const authenticate = (authToken: string) => {
         dispatch(setAuthToken(authToken));
@@ -25,13 +28,20 @@ export const useAuth = () => {
     // Function to login
     const handleLogin = async (email: string, password: string) => {
         const request = await login(email, password);
-        console.log(request)
 
         if(request.status === 200){
             const data = request as ApiSuccessResponse
             const login_response = data.data as LoginResponse
+
             authenticate(login_response.accessToken);
-            return true;
+            const user_response = await handleGetUser();
+            
+            if (user_response === true){
+                return true;
+            }
+
+            dispatch(setAuthStatus('not_authenticated')); 
+            return user_response
 
         } else if(request.status === 401){
             const response = request as ApiErrorResponse
