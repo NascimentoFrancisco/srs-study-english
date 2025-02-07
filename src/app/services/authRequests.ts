@@ -8,6 +8,6 @@ export const login = async (email: string, password: string) => {
 
 export const changePassword = async (password1: string, password2: string) => {
     return await api({
-        endpoint: "/change-password/", method: 'PUT', withAuth: true, data: {password1, password2}
+        endpoint: "/auth/change-password", method: 'PUT', withAuth: true, data: {password1, password2}
     });
 }
