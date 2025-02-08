@@ -4,7 +4,7 @@ import { ApiErrorResponse } from "../@types/errors/errorResponse";
 import { ApiSuccessResponse } from "../@types/response/apiResponse";
 import { ChangePassword, LoginResponse } from "../@types/user/auth";
 import { User } from "../@types/user/user";
-import { login, changePassword } from "../services/authRequests";
+import { login, changePassword, requestResetPassword, resetPassword } from "../services/authRequests";
 import { getUser } from "../services/userRequests";
 import { useHook } from "./user";
 
@@ -110,11 +110,34 @@ export const useAuth = () => {
         localStorage.removeItem(LOCAL_SOTORAGE_ACCESS_TOKEN);
     }
 
+    // Related to user password recovery
+    const handleRequestPasswordReset = async (email: string) => {
+        const request = await requestResetPassword(email);
+        if (request.status === 200){
+            return true;
+        }
+
+        let data = request as ApiErrorResponse;
+        return data .detail
+    }
+
+    const handlePasswordReset = async (token: string, password1: string, password2: string) => {
+        const request = await resetPassword(token, password1, password2);
+        if (request.status === 200){
+            return true;
+        }
+
+        let data = request as ApiErrorResponse;
+        return data.detail;
+    }
+
     return {
         handleLogin,
         handleGetToken,
         handleAuthenticateUser,
         handleChangePassword,
-        handleLogout
+        handleLogout,
+        handleRequestPasswordReset,
+        handlePasswordReset
     }
 }

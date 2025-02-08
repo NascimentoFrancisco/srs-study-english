@@ -1,4 +1,4 @@
-main{
+.main_password_recovery{
     display: flex;
     flex-direction: column;
     background-color: #F7F8FD;
@@ -7,10 +7,10 @@ main{
     height: 100vh;
 }
 
-.container{
+.container_password_recovery{
     display: flex;
     flex-direction: column;
-    width: 40%;
+    width: 60%;
     height: auto;
     border: 1px solid #b4b4b4;
     background-color: #F8FAFC;
@@ -20,7 +20,7 @@ main{
     gap: 15px;
 }
 
-.header_auth{
+.header_password_recovery{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -29,22 +29,14 @@ main{
     text-align: center;
 }
 
-.forgot_password{
+.action_password_recovery{
     display: flex;
+    width: 100%;
     justify-content: center;
-    margin-top: 20px;
-    font-style: italic;
-}
-
-.footer_auth{
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-    margin-bottom: 30px;
 }
 
 @media (max-width: 768px) {
-    .container{
+    .container_password_recovery{
         width: 90%;
     }
 }
