@@ -161,8 +161,14 @@ function Auth({type}: Props) {
             {type === 'create' ? "Registrar-se" : "Entrar"}
             {cliked && <CircularProgressIndicator/>}
           </Button>
+          
+          { type == 'login' &&
+            <div className="forgot_password">
+              <Link to="/password-recovery">Esqueci minha senha.</Link>
+            </div>
+          }
 
-          <div className='footer_auth'>
+          <div className='footer_auth'>   
             { type === 'create' 
               ? <Link to="/login">Se já possui conta, clique aqui para entrar.</Link>
               : <Link to="/create">Não possui conta? Clique aqui para crair uma.</Link>

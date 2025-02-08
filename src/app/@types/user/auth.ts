@@ -5,3 +5,7 @@ export type LoginResponse = {
 export type ChangePassword = {
     detail: string
 }
+
+export type RequestResetPassword = {
+    detail: string
+}

@@ -7,12 +7,17 @@ import Users from "../pages/user";
 import ListExercises from "../pages/listExercises";
 import NotFound from "../pages/notFound";
 import About from "../pages/about";
+import PasswordRecovery from "../pages/PasswordRecovery";
 
 function MainRouters() {
     const routers = useRoutes([
         {
             index: true,
             element: <AuthMiddleware> <Home /> </AuthMiddleware> 
+        },
+        {
+            path: "/password-recovery",
+            element: <PasswordRecovery />
         },
         {
             path: '/login',

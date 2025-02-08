@@ -3,7 +3,7 @@ import { ApiErrorResponse } from "../@types/errors/errorResponse";
 import { ApiSuccessResponse } from "../@types/response/apiResponse";
 import { User } from "../@types/user/user";
 import { ExerciseResponse } from "../@types/exercise/exercise";
-import { LoginResponse } from "../@types/user/auth";
+import { LoginResponse, RequestResetPassword } from "../@types/user/auth";
 import { ChangePassword } from "../@types/user/auth";
 
 
@@ -35,7 +35,7 @@ export const api = async ({
         });
 
         return {
-            data: response.data as User | ExerciseResponse | LoginResponse | ChangePassword | Array<ExerciseResponse> | {},
+            data: response.data as User | ExerciseResponse | LoginResponse | ChangePassword | Array<ExerciseResponse> | RequestResetPassword | {},
             status: response.status,
             endpoint
         }
