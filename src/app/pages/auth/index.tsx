@@ -1,7 +1,7 @@
 import './style.css';
 import TextInput from "../../components/TextInput";
 import { useState } from "react";
-import { isValidEmail, isValidPassword } from "../../../validators/validators";
+import { isValidEmail} from "../../../validators/validators";
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../../components/Button';
 import CircularProgressIndicator from '../../components/circularProgressIndicator';
@@ -24,6 +24,12 @@ function Auth({type}: Props) {
   const [passwordConfirmInput, setPasswordConfirmInput] = useState("");
   const [errorMessagePassword, setErrorMessagePassword] = useState("");
 
+  const [passwordValid, setPasswordValid] = useState({
+    eightCharacters: false,
+    oneNumber: false,
+    oneSpecialCharacter: false
+  });
+
   const [cliked, setClicked] = useState(false);
 
   const { handleLogin } = useAuth();
@@ -41,16 +47,6 @@ function Auth({type}: Props) {
     const value = e.target.value;
     setEmailInput(value);
     setEmailError(!isValidEmail(value));
-  };
-
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setPasswordInput(value);
-
-    if (type === 'create'){
-      setPasswordError(!isValidPassword(value));
-      setErrorMessagePassword("Senha inválida, pois é muito fraca.")
-    }
   };
 
   const handlePasswordConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,16 +69,19 @@ function Auth({type}: Props) {
 
   const handleOnClik = async () => {
     setClicked(true)
-    const conditionCreate = (!nameInput || !emailInput || !passwordInput || !passwordConfirmInput) || (nameError || emailError || passwordError)
-    
+
+    const conditionCreateInputs = (!nameInput || !emailInput || !passwordInput || !passwordConfirmInput);
+    const conditionCreateErros = (nameError || emailError || passwordError);
+    const conditionPasswordError = (!passwordValid.eightCharacters || !passwordValid.oneNumber || !passwordValid.oneSpecialCharacter);
+
     if(type === 'login' && (!emailInput || !passwordInput) || (emailError || passwordError)){
       setClicked(false);
       toast.info("Prencha todos os campos com dados válidos.", {position:'top-right'});
       return;
     }
 
-    if(type === 'create' && conditionCreate){
-      toast.info("Prenha todos os campos com dados válidos.", {position:'top-right'});
+    if(type === 'create' && (conditionCreateInputs || conditionCreateErros || conditionPasswordError)){
+      toast.info("Prencha todos os campos com dados válidos.", {position:'top-right'});
       setClicked(false);
       return;
 
@@ -96,7 +95,7 @@ function Auth({type}: Props) {
       if (type === 'login') {
         toast.success("Seja bem vindo!", {position:'top-right'})
       } else {
-        toast.success("cadastro realizado com sucesso.", {position: 'top-right'});
+        toast.success("Cadastro realizado com sucesso.", {position: 'top-right'});
       }
     } else {
       setClicked(false);
@@ -104,24 +103,54 @@ function Auth({type}: Props) {
     }
   }
 
+  const validatePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPasswordInput(value);
+
+    if (type === 'create'){
+
+      let eightCharacters = passwordValid.eightCharacters; 
+      let oneNumber = passwordValid.oneNumber;
+      let oneSpecialCharacter = passwordValid.oneSpecialCharacter;
+
+      eightCharacters =  value.length > 8 ? true : false;
+      oneNumber =  /\d/.test(value) ? true : false;
+      oneSpecialCharacter = /[!@#$%^&*(),.?":{}|<>]/.test(value) ? true : false;
+      
+      setPasswordValid({
+        eightCharacters: eightCharacters,
+        oneNumber: oneNumber,
+        oneSpecialCharacter: oneSpecialCharacter
+      });
+
+      if (passwordConfirmInput && value != passwordConfirmInput){
+        setPasswordError(true);
+        setErrorMessagePassword("As senhas não coincidem.") 
+      } else if (passwordConfirmInput && value === passwordConfirmInput){
+        setPasswordError(false);
+        setErrorMessagePassword("") 
+      }
+    }
+  }
+
   return (
       <main>
-        <div className="container">
+        <div className="container_auth">
           
           <div className="header_auth">
-            <h4> {type === 'login' ? "Entrar na meinha conta" : "Criar sua conta"}</h4>
+            <h4> {type === 'login' ? "Entrar na minha conta" : "Criar minha conta"}</h4>
             <span>Insira as informações necessárias</span>
           </div>
           
           { type === 'create' &&
             <TextInput 
-              label="Nome:"
+              label="Nome completo:"
               value={nameInput}
               onChange={handleNameChange}
               type="text"
-              placeholder="Digite seu nome..."
+              placeholder="Digite seu nome completo..."
               error={nameError}
-              errorMessage={nameError ? "Este campo é obrigatório" : ""}
+              errorMessage={nameError ? "Nome curto, por favor adicione o nome completo." : ""}
             />
           }
 
@@ -132,18 +161,28 @@ function Auth({type}: Props) {
             type="email"
             placeholder="exemplo@exemplo.com"
             error={emailError}
-            errorMessage={emailError ? "Email invĺido" : ""}
+            errorMessage={emailError ? "Email inválido" : ""}
           />
 
           <TextInput 
             label="Senha:"
             value={passwordInput}
-            onChange={handlePasswordChange}
+            onChange={validatePassword}
             type="password"
             placeholder=""
             error={passwordError}
             errorMessage={passwordError ? errorMessagePassword : ""}
           />
+
+          { type === 'create' &&
+            <div className="valid_password">
+              <ul>
+                <li className={passwordValid.eightCharacters ? "valid" : "invalid"}>8 carcteres</li>
+                <li className={passwordValid.oneNumber ? "valid" : "invalid"}>Um número</li>
+                <li className={passwordValid.oneSpecialCharacter ? "valid" : "invalid"}>Um caractere especial: !@#$%^&*(),.?":{}|<></></li>
+              </ul>
+            </div>
+          }
 
           { type === 'create' &&
             <TextInput 
@@ -171,7 +210,7 @@ function Auth({type}: Props) {
           <div className='footer_auth'>   
             { type === 'create' 
               ? <Link to="/login">Se já possui conta, clique aqui para entrar.</Link>
-              : <Link to="/create">Não possui conta? Clique aqui para crair uma.</Link>
+              : <Link to="/create">Não possui conta? Clique aqui para criar uma.</Link>
             }
 
           </div>
