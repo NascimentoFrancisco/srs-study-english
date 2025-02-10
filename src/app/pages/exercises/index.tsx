@@ -60,6 +60,12 @@ function Exircises({type}: Props){
     const handleOnClik = async () => {
         setClicked(true);
 
+        if ((!textInput || !translationInput ) || (textError || translationError)){
+            setClicked(false);
+            toast.info("Prencha todos os campos com dados válidos.", {position:'top-right'});
+            return;
+        }
+
         if (type === 'create'){
             
             const request = await handleCreateExercise(textInput, translationInput, "", observationInput);
@@ -109,7 +115,7 @@ function Exircises({type}: Props){
                     ? 
                         <div className="header_auth">
                             <h4>Cadastro de exercício</h4>
-                            <span>Insira as informações do novo exrcício abaixo</span>
+                            <span>Insira as informações do novo exercício abaixo</span>
                         </div>
                     :
                         <div className="header_auth">
@@ -119,24 +125,25 @@ function Exircises({type}: Props){
                 }
 
                 <TextInput 
-                    label="Texto em inglês: *"
+                    label="Frase em inglês: *"
                     value={textInput}
                     onChange={handleTextChange}
                     type="text"
                     lang='en-US'
-                    placeholder="Texto em inglês..."
+                    placeholder="Insira a frase em inglês..."
                     error={textError}
-                    errorMessage={textError ? "Este campo é obrigatório" : ""}
+                    maxLength={250}
+                    errorMessage={textError ? "Frase curta, insira uma frase que tenha mais palavras" : ""}
                 />
 
                 <TextInput 
-                    label="Texto em português: *"
+                    label="Frase em português: *"
                     value={translationInput}
                     onChange={handleTranslationtChange}
                     type="text"
-                    placeholder="Texto em português..."
+                    placeholder="Insira a frase em português..."
                     error={translationError}
-                    errorMessage={translationError ? "Este campo é obrigatório" : ""}
+                    errorMessage={translationError ? "Frase curta, insira uma frase que tenha mais palavras" : ""}
                 />
 
                 <TextInput
