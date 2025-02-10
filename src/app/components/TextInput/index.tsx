@@ -9,10 +9,11 @@ type Props = {
     type: 'text' | 'password' | 'date' | 'email',
     lang?: 'pt-BR' | 'en-US'
     error: boolean,
-    errorMessage?: string
+    errorMessage?: string,
+    maxLength?: number
 }
 
-function TextInput({value, onChange, label, placeholder, errorMessage, error = false, type = 'text', lang = 'pt-BR'}: Props){
+function TextInput({value, onChange, label, placeholder, errorMessage, error = false, type = 'text', lang = 'pt-BR', maxLength}: Props){
     const referenceId = useId();    
     return (
         <div className="container-input">
@@ -24,9 +25,15 @@ function TextInput({value, onChange, label, placeholder, errorMessage, error = f
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
+                maxLength={maxLength}
                 style={error ? { borderColor: '#E53E3E' } : {}}
             />
             {error && errorMessage && <p className="error-message" style={{ color: '#E53E3E' }}>{errorMessage}</p>}
+            {maxLength && (
+                <p className="char-counter">
+                    {value.length} / {maxLength}
+                </p>
+            )}
         </div>
     );
 }

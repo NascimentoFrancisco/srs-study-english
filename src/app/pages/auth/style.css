@@ -7,10 +7,10 @@ main{
     height: 100vh;
 }
 
-.container{
+.container_auth{
     display: flex;
     flex-direction: column;
-    width: 40%;
+    width: 50%;
     height: auto;
     border: 1px solid #b4b4b4;
     background-color: #F8FAFC;
@@ -29,6 +29,22 @@ main{
     text-align: center;
 }
 
+.valid_password{
+    display: flex;
+    flex-direction: column;
+    padding-left: 25px;
+    color: #344055;
+    font-size: 14px;
+}
+
+.valid{
+    color: green;
+}
+
+.invalid{
+    color: red;
+}
+
 .forgot_password{
     display: flex;
     justify-content: center;
@@ -44,7 +60,7 @@ main{
 }
 
 @media (max-width: 768px) {
-    .container{
+    .container_auth{
         width: 90%;
     }
 }
