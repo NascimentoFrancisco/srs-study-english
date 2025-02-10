@@ -37,7 +37,7 @@ function Exercise({textToAadio, exerciseId, translation, observation, haandleExe
 
     const { Text, speechStatus, start, stop, } = useSpeech({text: textToAadio, lang: "en", rate: audioSpeed});
     const { startListening, stopListening, transcript, reset } = useVoiceToText({
-        continuous: false,
+        continuous: true,
         lang: "en-US",
     });
 
