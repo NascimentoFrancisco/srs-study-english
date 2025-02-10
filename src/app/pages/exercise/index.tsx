@@ -37,7 +37,7 @@ function Exercise({textToAadio, exerciseId, translation, observation, haandleExe
 
     const { Text, speechStatus, start, stop, } = useSpeech({text: textToAadio, lang: "en", rate: audioSpeed});
     const { startListening, stopListening, transcript, reset } = useVoiceToText({
-        continuous: true,
+        continuous: false,
         lang: "en-US",
     });
 
@@ -301,11 +301,11 @@ function Exercise({textToAadio, exerciseId, translation, observation, haandleExe
                         </div>
                         <div className="datas_result">
                             Considerando a pontuação:
-                            <span style={{color: colorHitsWithPont}}> { hitsWithPontuation }%</span>
+                            <span style={{color: colorHitsWithPont}}> { hitsWithPontuation.toFixed(2) }%</span>
                         </div>
                         <div className="datas_result">
                             Desconsiderando a pontuação: 
-                            <span style={{color: colorHitsWithoutPont}}> { hitsWithoutPontuation }%</span> 
+                            <span style={{color: colorHitsWithoutPont}}> { hitsWithoutPontuation.toFixed(2) }%</span> 
                         </div>
                         </div>
                     </>
