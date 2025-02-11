@@ -97,7 +97,7 @@ function ListExercises() {
     return (
         <main>
             <ModalConfirmation 
-                title="Confirmação de exclusão de exercíco."
+                title="Confirmação de exclusão de exercício."
                 text="Você realmente deseja excluir o exercício selecionado."
                 show={showModal}
                 cliked={clickeModal}
@@ -106,8 +106,8 @@ function ListExercises() {
                 action={handleDeleteExercise}
             />
             <div className="header_list_all_exercises">
-                <h4>Todos os exercícos do usuário</h4>
-                <Button children="Exercícios pendnetes" onClick={()=> navigate("/")}/>
+                <h4>Todos os exercícios do usuário</h4>
+                <Button children="Exercícios pendentes" onClick={()=> navigate("/")}/>
             </div>
 
             {loadingRequest &&
@@ -122,10 +122,10 @@ function ListExercises() {
                         {allExercises.map((exercise, index) => (
                             <div className="exercise_of_list" key={index}>
                                 <div className="values_exercise">
-                                    <p><b>Texto em inglês: </b> {exercise.text}</p>
+                                    <p><b>Frase em inglês: </b> {exercise.text}</p>
                                 </div>
                                 <div className="values_exercise">
-                                    <p><b>Texto em português: </b>{exercise.translation}</p>
+                                    <p><b>Frase em português: </b>{exercise.translation}</p>
                                 </div>
                                 <div className="values_exercise">
                                     <p><b>Observações: </b>{exercise.observation ? exercise.observation : "Sem observações"}</p>

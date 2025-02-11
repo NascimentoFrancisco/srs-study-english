@@ -1,16 +1,16 @@
 import { useState } from "react";
 import "./style.css";
-import { isValidEmail, isValidPassword } from "../../../validators/validators";
+import { isValidEmail } from "../../../validators/validators";
 import TextInput from "../../components/TextInput";
 import Button from "../../components/Button";
 import CircularProgressIndicator from "../../components/circularProgressIndicator";
 import { useAuth } from "../../hooks/auth";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function PasswordRecovery(){
 
-    const [emailRequest, setEmailRequest] = useState(false);
+    const [emailRequest, setEmailRequest] = useState(true);
 
     const [emailInput, setEmailInput] = useState("");
     const [emailError, setEmailError] = useState(false);
@@ -23,6 +23,11 @@ function PasswordRecovery(){
     const [passwordError, setPasswordError] = useState(false);
     const [passwordConfirmInput, setPasswordConfirmInput] = useState("");
     const [errorMessagePassword, setErrorMessagePassword] = useState("");
+    const [passwordValid, setPasswordValid] = useState({
+        eightCharacters: false,
+        oneNumber: false,
+        oneSpecialCharacter: false
+    });
 
     const { handleRequestPasswordReset, handlePasswordReset } = useAuth();
     const navigate = useNavigate();
@@ -38,16 +43,7 @@ function PasswordRecovery(){
         setTokenInput(value);
         setTokenError(value.length < 8);
       };
-    
-    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setPasswordInput(value);
-          
-        setPasswordError(!isValidPassword(value));
-        setErrorMessagePassword("Senha inválida, pois é muito fraca.")
               
-    };
-          
     const handlePasswordConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setPasswordConfirmInput(value);
@@ -77,8 +73,36 @@ function PasswordRecovery(){
         }
     }
 
+    const validatePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setPasswordInput(value);
+        
+        let eightCharacters = passwordValid.eightCharacters; 
+        let oneNumber = passwordValid.oneNumber;
+        let oneSpecialCharacter = passwordValid.oneSpecialCharacter;
+    
+        eightCharacters =  value.length > 8 ? true : false;
+        oneNumber =  /\d/.test(value) ? true : false;
+        oneSpecialCharacter = /[!@#$%^&*(),.?":{}|<>]/.test(value) ? true : false;
+          
+        setPasswordValid({
+            eightCharacters: eightCharacters,
+            oneNumber: oneNumber,
+            oneSpecialCharacter: oneSpecialCharacter
+        });
+    
+        if (passwordConfirmInput && value != passwordConfirmInput){
+            setPasswordError(true);
+            setErrorMessagePassword("As senhas não coincidem.") 
+        } else if (passwordConfirmInput && value === passwordConfirmInput){
+            setPasswordError(false);
+            setErrorMessagePassword("");
+        }
+    }
+
     const handleOnClikResetPassword = async () => {
-        if(!cliked && (passwordInput && !passwordError) && passwordConfirmInput && tokenInput){
+        let condition = (passwordValid.eightCharacters && passwordValid.oneNumber && passwordValid.oneSpecialCharacter);
+        if(!cliked && (passwordInput && !passwordError) && passwordConfirmInput && tokenInput && condition){
             setClicked(true);
             const request = await handlePasswordReset(tokenInput, passwordInput, passwordConfirmInput);
             if(request === true){
@@ -142,12 +166,19 @@ function PasswordRecovery(){
                     <TextInput 
                         label="Senha:"
                         value={passwordInput}
-                        onChange={handlePasswordChange}
+                        onChange={validatePassword}
                         type="password"
                         placeholder=""
                         error={passwordError}
                         errorMessage={passwordError ? errorMessagePassword : ""}
                     />
+                    <div className="valid_password">
+                        <ul>
+                            <li className={passwordValid.eightCharacters ? "valid" : "invalid"}>8 carcteres</li>
+                            <li className={passwordValid.oneNumber ? "valid" : "invalid"}>Um número</li>
+                            <li className={passwordValid.oneSpecialCharacter ? "valid" : "invalid"}>Um caractere especial: !@#$%^&*(),.?":{}|<></></li>
+                        </ul>
+                    </div>
                     <TextInput 
                         label="Repita sua senha:"
                         value={passwordConfirmInput}
@@ -165,7 +196,9 @@ function PasswordRecovery(){
                     </div>
                     </>
                 }
-
+                <div className="foother_password_recovery">
+                    <Link to="/">Voltar para o início</Link>
+                </div>
             </div>
         </main>
     )
