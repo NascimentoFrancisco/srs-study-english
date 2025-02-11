@@ -35,6 +35,14 @@
     justify-content: center;
 }
 
+.foother_password_recovery{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
 @media (max-width: 768px) {
     .container_password_recovery{
         width: 90%;

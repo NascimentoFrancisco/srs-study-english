@@ -234,9 +234,9 @@ function Exercise({textToAadio, exerciseId, translation, observation, haandleExe
                                     </div>
                                 :   
                                 <>
-                                    <div className="header_result">
+                                    {/* <div className="header_result">
                                         <span>Exercício finalizado</span>
-                                    </div>
+                                    </div> */}
                                     <button className="finish_button_exercise" onClick={handleFinishExercise}>
                                         Finalizar
                                         {clicked && <CircularProgressIndicator />}
@@ -266,7 +266,7 @@ function Exercise({textToAadio, exerciseId, translation, observation, haandleExe
             <div className="containser_answers">
                 { !answered &&
                     <TextInput 
-                        label='Sua resposta' 
+                        label='Sua resposta:' 
                         value={textAnswers}
                         onChange={onChageTextAnswers}
                         type='text'
@@ -279,14 +279,14 @@ function Exercise({textToAadio, exerciseId, translation, observation, haandleExe
                 { answered &&
                     <>
                         <div className='ansewrs'>
-                            <b>Texto correto:</b> <Text />
+                            <b>Frase correta:</b> <Text />
                         </div>
                         <div className='ansewrs'>
                             <b>Sua resposta:</b> { textAnswers }
                         </div>
                         <div className="divider"></div>
                         <div className='ansewrs'>
-                            <b>Texto em português:</b> { translation }
+                            <b>Frase em português:</b> { translation }
                         </div>
                         { observation &&
                             <div className='ansewrs'>
@@ -301,11 +301,11 @@ function Exercise({textToAadio, exerciseId, translation, observation, haandleExe
                         </div>
                         <div className="datas_result">
                             Considerando a pontuação:
-                            <span style={{color: colorHitsWithPont}}> { hitsWithPontuation.toFixed(2) }%</span>
+                            <span style={{color: colorHitsWithPont}}> { hitsWithPontuation.toFixed(2).replace(".", ",") }%</span>
                         </div>
                         <div className="datas_result">
                             Desconsiderando a pontuação: 
-                            <span style={{color: colorHitsWithoutPont}}> { hitsWithoutPontuation.toFixed(2) }%</span> 
+                            <span style={{color: colorHitsWithoutPont}}> { hitsWithoutPontuation.toFixed(2).replace(".", ",") }%</span> 
                         </div>
                         </div>
                     </>

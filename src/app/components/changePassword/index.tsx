@@ -1,6 +1,5 @@
 import "./style.css";
 import { useState } from "react";
-import { isValidPassword } from "../../../validators/validators";
 import TextInput from "../../components/TextInput";
 import Button from "../../components/Button";
 import CircularProgressIndicator from "../../components/circularProgressIndicator";
@@ -15,18 +14,15 @@ function ChangePassword(){
     const [passwordConfirmInput, setPasswordConfirmInput] = useState("");
     const [errorMessagePassword, setErrorMessagePassword] = useState("");
     const [cliked, setClicked] = useState(false);
+
+    const [passwordValid, setPasswordValid] = useState({
+        eightCharacters: false,
+        oneNumber: false,
+        oneSpecialCharacter: false
+    });
     
     const navigate = useNavigate();
     const { handleChangePassword } = useAuth();
-
-    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setPasswordInput(value);
-    
-        setPasswordError(!isValidPassword(value));
-        setErrorMessagePassword("Senha inválida, pois é muito fraca.")
-        
-      };
     
     const handlePasswordConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -40,7 +36,8 @@ function ChangePassword(){
     };
 
     const handleOnClik = async () => {
-        if(!cliked && (passwordInput && !passwordError) && passwordConfirmInput){
+        let condition = (passwordValid.eightCharacters && passwordValid.oneNumber && passwordValid.oneSpecialCharacter);
+        if(!cliked && (passwordInput && !passwordError) && passwordConfirmInput && condition){
             setClicked(true);
             const request = await handleChangePassword(passwordInput, passwordConfirmInput);
             if(request === true){
@@ -56,21 +53,55 @@ function ChangePassword(){
         }
     }
 
+    const validatePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setPasswordInput(value);
+        
+        let eightCharacters = passwordValid.eightCharacters; 
+        let oneNumber = passwordValid.oneNumber;
+        let oneSpecialCharacter = passwordValid.oneSpecialCharacter;
+    
+        eightCharacters =  value.length > 8 ? true : false;
+        oneNumber =  /\d/.test(value) ? true : false;
+        oneSpecialCharacter = /[!@#$%^&*(),.?":{}|<>]/.test(value) ? true : false;
+          
+        setPasswordValid({
+            eightCharacters: eightCharacters,
+            oneNumber: oneNumber,
+            oneSpecialCharacter: oneSpecialCharacter
+        });
+    
+        if (passwordConfirmInput && value != passwordConfirmInput){
+            setPasswordError(true);
+            setErrorMessagePassword("As senhas não coincidem.") 
+        } else if (passwordConfirmInput && value === passwordConfirmInput){
+            setPasswordError(false);
+            setErrorMessagePassword("");
+        }
+    }
+
     return (
         <div className="container">
             <div className="header_auth">
                 <h4>Alteração de senha</h4>
-                <span>Edite sua senha abaixo</span>
+                <span>Digite sua senha abaixo</span>
             </div>
             <TextInput 
                 label="Senha:"
                 value={passwordInput}
-                onChange={handlePasswordChange}
+                onChange={validatePassword}
                 type="password"
                 placeholder=""
                 error={passwordError}
                 errorMessage={passwordError ? errorMessagePassword : ""}
             />
+            <div className="valid_password">
+                <ul>
+                    <li className={passwordValid.eightCharacters ? "valid" : "invalid"}>8 carcteres</li>
+                    <li className={passwordValid.oneNumber ? "valid" : "invalid"}>Um número</li>
+                    <li className={passwordValid.oneSpecialCharacter ? "valid" : "invalid"}>Um caractere especial: !@#$%^&*(),.?":{}|<></></li>
+                </ul>
+            </div>
             <TextInput 
                 label="Repita sua senha:"
                 value={passwordConfirmInput}

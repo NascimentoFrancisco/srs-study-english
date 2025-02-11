@@ -41,7 +41,7 @@ function AuthForm(){
         setClikedModal(true);
         const request = await handleDeleteUser();
         if (request === true){
-            toast.success("Conta excluída com sucess!.. :(", {position: 'top-right'});
+            toast.success("Conta excluída com sucesso!.. :(", {position: 'top-right'});
             setClikedModal(true);
             setShowModal(false);
         } else {
@@ -99,7 +99,7 @@ function AuthForm(){
                 type="text"
                 placeholder="Digite seu nome..."
                 error={nameError}
-                errorMessage={nameError ? "Este campo é obrigatório" : ""}
+                errorMessage={nameError ? "Nome curto, por favor insira o seu nome completo" : ""}
             />
 
             <TextInput 
@@ -119,7 +119,7 @@ function AuthForm(){
             </div>
 
             <div className='footer_auth'>
-                <Link to="/change-password">Editar senha</Link>
+                <Link to="/change-password">Alterar senha</Link>
             </div>
 
             <div className="delete_user">
