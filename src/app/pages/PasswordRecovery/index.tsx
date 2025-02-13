@@ -10,7 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 function PasswordRecovery(){
 
-    const [emailRequest, setEmailRequest] = useState(true);
+    const [emailRequest, setEmailRequest] = useState(false);
 
     const [emailInput, setEmailInput] = useState("");
     const [emailError, setEmailError] = useState(false);
