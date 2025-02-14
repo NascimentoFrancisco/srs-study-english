@@ -40,7 +40,7 @@ function Exercise({textToAadio, exerciseId, translation, observation, haandleExe
         continuous: true,
         lang: "en-US",
     });
-    const isSupported = Boolean(window.webkitSpeechRecognition);
+    const isSupported = 'SpeechRecognition' in window || 'webkitSpeechRecognition' in window;
 
     const handleChangeAudioSpeed = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setAudioSpeed(parseFloat(event.target.value));
@@ -174,8 +174,8 @@ function Exercise({textToAadio, exerciseId, translation, observation, haandleExe
         const index = Math.min(4, Math.floor((100 - avargeTotal) / 20));
         
         const data = {"difficult": levels[index]}
-        console.log(avargeTotal);
-        console.log(data);
+        //console.log(avargeTotal);
+        //console.log(data);
         const request = await handleUpdateLevelExercise(exerciseId, data.difficult);
         if (request === true){
             setClicked(false);
