@@ -40,6 +40,7 @@ function Exercise({textToAadio, exerciseId, translation, observation, haandleExe
         continuous: true,
         lang: "en-US",
     });
+    const isSupported = 'SpeechRecognition' in window || 'webkitSpeechRecognition' in window;
 
     const handleChangeAudioSpeed = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setAudioSpeed(parseFloat(event.target.value));
@@ -141,8 +142,15 @@ function Exercise({textToAadio, exerciseId, translation, observation, haandleExe
         }
 
         if(!statusTextToVoice && !transcript){
-            setStatusTextToVoice(true);
-            return startListening();
+            if (isSupported){
+                setStatusTextToVoice(true);
+                return startListening();
+            }
+            toast.error(
+                `Infelizmente, o seu navegador não possui suporte para o nosso modelo de 
+                reconhecimento de voz.\n Estamos buscando alternativas para resolver esse impasse`,
+                {position: 'top-center'}
+            );
         }
     }
 
@@ -158,14 +166,16 @@ function Exercise({textToAadio, exerciseId, translation, observation, haandleExe
         if(clicked) return
 
         setClicked(true);
-        const avarge = averageRateVoiceExercise.reduce((accumulator, value) => accumulator + value, 0) / 3;
-        const avargeTotal = (avarge + hitsWithPontuation + hitsWithoutPontuation) / 3;
+        const meanDivisor = isSupported ? 3 : 2;
+        const avarge = isSupported ? averageRateVoiceExercise.reduce((accumulator, value) => accumulator + value, 0) / 3 : 0;
+        const avargeTotal = (avarge + hitsWithPontuation + hitsWithoutPontuation) / meanDivisor;
 
         const levels = ["easy", "moderate", "reasonable", "difficult", "very_difficult"];
         const index = Math.min(4, Math.floor((100 - avargeTotal) / 20));
         
         const data = {"difficult": levels[index]}
-
+        //console.log(avargeTotal);
+        //console.log(data);
         const request = await handleUpdateLevelExercise(exerciseId, data.difficult);
         if (request === true){
             setClicked(false);
@@ -184,8 +194,12 @@ function Exercise({textToAadio, exerciseId, translation, observation, haandleExe
             { exercisePronunciation &&
                 <div className="header_result">
                     {counterExercisePronuciation > 0 
-                        ? 
-                            <span>Você deve exercitar a pronúcia {counterExercisePronuciation} vezes</span>
+                        ?
+                        <>
+                            {isSupported &&
+                                <span>Você deve exercitar a pronúcia {counterExercisePronuciation} vezes</span>
+                            }
+                        </>
                         :
                             <span>Parabéns, clique em finalizar para fazer o próximo exercício.</span>
                     }
@@ -222,7 +236,7 @@ function Exercise({textToAadio, exerciseId, translation, observation, haandleExe
                         </div>
                         <div className="divider"></div>
                         <div className="speak_pronunciation">
-                            { averageRateVoiceExercise.length < 3
+                            { averageRateVoiceExercise.length < 3 && isSupported
                                 ?
                                     <div className="play_pause" onClick={handleStatusVoiceToText}>
                                         { statusTextToVoice 
@@ -233,10 +247,16 @@ function Exercise({textToAadio, exerciseId, translation, observation, haandleExe
                                         }
                                     </div>
                                 :   
-                                <>
-                                    {/* <div className="header_result">
-                                        <span>Exercício finalizado</span>
-                                    </div> */}
+                                <> 
+                                    { !isSupported &&
+                                        <div className="header_result">
+                                            <span>
+                                                Infelizmente, devido ao fato de o seu navegador não suportar 
+                                                o nosso modelo de reconhecimento de voz, seu exercício será 
+                                                finalizado sem treino de pronúncia. 🥲
+                                            </span>
+                                        </div>
+                                    }
                                     <button className="finish_button_exercise" onClick={handleFinishExercise}>
                                         Finalizar
                                         {clicked && <CircularProgressIndicator />}
@@ -310,7 +330,7 @@ function Exercise({textToAadio, exerciseId, translation, observation, haandleExe
                         </div>
                     </>
                 }
-                { answered 
+                { answered
                     ?
                     <div className="button_answers">
                         <Button 
